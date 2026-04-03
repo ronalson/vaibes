@@ -1,12 +1,12 @@
 ## Plan Mode
-- at the end of each plan, give me a list of unresolved questions to answer, if any.
+- at the end of each planning phase, give me a list of unresolved questions to answer, if any.
 
-## GIT
+## GIT / Github
 **push**
-- always use SSH
+- use SSH
 
 **commit**
-- do NOT include AI co-author attribution.
+- NEVER include AI co-author attribution.
 
 **pull request**
 - use `gh` (github cli)
