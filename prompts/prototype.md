@@ -2,6 +2,16 @@
 description: Create a prototype for the idea or plan
 ---
 
-Let's build a prototype of $1.
+Build a prototype of `$1`.
 
-Help me identify the scope of it and than build a first version so we can quickly understand: what footguns and shortcomings might exist in the codebase and how we can refine the solution. Skip tests and boilerplates. Focus on validating the idea.
+First, define the smallest scope that can validate the idea. Then build a first version that is good enough to expose the main footguns and shortcomings in the codebase.
+
+Guidelines:
+- Skip tests and unnecessary boilerplate
+- Prefer speed of learning over completeness
+- Keep the implementation narrow and easy to revise
+
+At the end, briefly report:
+- What was built
+- What risks or footguns showed up
+- What should be refined next
