@@ -2,11 +2,11 @@
 - at the end of each planning phase, give me a list of unresolved questions to answer, if any.
 
 ## GIT / Github
-**push**
-- use SSH
+**messages/descriptions**
+- NEVER include AI co-author attribution.
 
 **commit**
-- NEVER include AI co-author attribution.
+- use conventional commits
 
 **pull request**
 - use `gh` (github cli)
