@@ -49,7 +49,7 @@ a local checkout instead, set `MATTPOCOCK_SKILLS_SOURCE=/path/to/mattpocock-skil
 - [prototype](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype)
 - [handoff](https://github.com/mattpocock/skills/tree/main/skills/productivity/handoff)
 
-2. [Jakub Krehel Better UI](https://github.com/jakubkrehel/make-interfaces-feel-better)
+2. [Jakub Krehel - Make interfaces Feel Better](https://github.com/jakubkrehel/make-interfaces-feel-better)
 
 Site: https://jakub.kr/writing/details-that-make-interfaces-feel-better
 
