@@ -6,6 +6,7 @@ A small library of reusable agent prompts and task-specific skills.
 
 | Skill | Use For | Not For |
 | --- | --- | --- |
+| [`better-ui`](./skills/better-ui/SKILL.md) | Improving frontend UI polish through concrete design-engineering changes: motion, hover/press states, typography, surfaces, popovers, tooltips, drawers, toasts, and micro-interactions. | Broad product redesigns, brand exploration, marketing-only art direction, or backend/API work. |
 | [`commit`](./skills/commit/SKILL.md) | Creating a local git commit with an intentional Conventional Commits-style message, including staging only the intended files. | Pushing, opening PRs, or explaining git without committing. |
 | [`deslop`](./skills/deslop/SKILL.md) | Removing AI-looking slop from the current branch diff while preserving behavior and keeping cleanup branch-local. | Broad refactors, redesigns, formatting-only passes, or general code review. |
 | [`grill-with-docs`](./skills/grill-with-docs/SKILL.md) | Stress-testing a plan against the repo's domain model, sharpening terminology, and updating `CONTEXT.md` or ADRs as decisions settle. | Quick implementation, lightweight brainstorming, or plans that do not need domain-doc alignment. |
