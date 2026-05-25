@@ -21,8 +21,6 @@ Prompts are lightweight Markdown templates. Keep them explicit about input, task
 
 - [`prompts/better-rules.md`](./prompts/better-rules.md): generate or tighten an `AGENTS.md` file using only project-specific context.
 - [`prompts/deslop.md`](./prompts/deslop.md): clean AI-style slop from a branch diff without broad refactoring.
-- [`prompts/lets-discuss.md`](./prompts/lets-discuss.md): interview the user about a plan, then rewrite it as a stronger spec.
-- [`prompts/prototype.md`](./prompts/prototype.md): scope and build a narrow prototype to validate an idea quickly.
 
 Design goals for prompts in this repo:
 - Stay lean.
@@ -35,7 +33,6 @@ Design goals for prompts in this repo:
 Skills are small operating guides for specific tasks. Each skill lives in its own folder with a required `SKILL.md`.
 
 - [`skills/commit/SKILL.md`](./skills/commit/SKILL.md): create a concise Conventional Commits-style git commit and stage only the intended files.
-- [`skills/github/SKILL.md`](./skills/github/SKILL.md): use the `gh` CLI for GitHub issues, pull requests, workflow runs, and API queries.
 - [`skills/pr/SKILL.md`](./skills/pr/SKILL.md): open or update a PR with a clear title and a compact reviewer-focused body.
 
 Skill design goals in this repo:
