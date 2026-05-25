@@ -1,50 +1,54 @@
 # vaibes
 
-A small library of reusable agent context: static rules, prompt templates, and task-specific skills.
-
-## Structure
-
-- [`rules/`](./rules) contains always-on repo or agent guidance.
-- [`prompts/`](./prompts) contains lean prompt templates for repeatable workflows.
-- [`skills/`](./skills) contains focused task guides the agent should read before doing specific kinds of work.
-
-## Rules
-
-Rules are static instructions. They should stay short and contain only durable constraints or conventions.
-
-- [`rules/AGENTS.md`](./rules/AGENTS.md): project rules for planning, git usage, and pull request conventions.
-- [`rules/CLAUDE.md`](./rules/CLAUDE.md): points Claude-style tooling at `AGENTS.md` as the canonical rules file.
-
-## Prompts
-
-Prompts are lightweight Markdown templates. Keep them explicit about input, task, and output.
-
-- [`prompts/better-rules.md`](./prompts/better-rules.md): generate or tighten an `AGENTS.md` file using only project-specific context.
-- [`prompts/deslop.md`](./prompts/deslop.md): clean AI-style slop from a branch diff without broad refactoring.
-
-Design goals for prompts in this repo:
-- Stay lean.
-- Prefer clear stop conditions.
-- Prefer specific deliverables over open-ended exploration.
-- Avoid runtime-specific wording unless the prompt is intentionally tied to one agent.
+A small library of reusable agent prompts and task-specific skills.
 
 ## Skills
 
-Skills are small operating guides for specific tasks. Each skill lives in its own folder with a required `SKILL.md`.
+| Skill | Use For | Not For |
+| --- | --- | --- |
+| [`commit`](./skills/commit/SKILL.md) | Creating a local git commit with an intentional Conventional Commits-style message, including staging only the intended files. | Pushing, opening PRs, or explaining git without committing. |
+| [`deslop`](./skills/deslop/SKILL.md) | Removing AI-looking slop from the current branch diff while preserving behavior and keeping cleanup branch-local. | Broad refactors, redesigns, formatting-only passes, or general code review. |
+| [`implement`](./skills/implement/SKILL.md) | Implementing one ready-for-agent GitHub issue from `ISSUE_NUMBER`, `ISSUE_URL`, and `BRANCH`, using `gh`, TDD where appropriate, checks, commit, and issue update/close. | Local `.scratch` issues, backlog triage, PR creation, or multi-issue work. |
+| [`implement-locally`](./skills/implement-locally/SKILL.md) | Implementing one ready-for-agent local markdown issue from `.scratch/<feature>/issues/`, `ISSUE_FILE`, and `BRANCH`, including parent PRD context when present. | GitHub issues, backlog triage, PR creation, or multi-issue work. |
+| [`pr`](./skills/pr/SKILL.md) | Opening or updating a pull request with a clear title and compact reviewer-focused body. | Making commits, changing code, or replacing a detailed release note. |
 
-- [`skills/commit/SKILL.md`](./skills/commit/SKILL.md): create a concise Conventional Commits-style git commit and stage only the intended files.
-- [`skills/pr/SKILL.md`](./skills/pr/SKILL.md): open or update a PR with a clear title and a compact reviewer-focused body.
+## Curated Skills
 
-Skill design goals in this repo:
-- Be short enough to load quickly.
-- Tell the agent what good output looks like.
-- Add only task-specific guidance, not generic engineering advice.
-- Prefer a simple step-by-step workflow when the task is easy to get subtly wrong.
+1. [Matt Pocock](https://github.com/mattpocock/skills)
 
-## Authoring Notes
+```bash
+npx skills@latest add mattpocock/skills
+```
 
-When adding new files here:
-- Put durable conventions in `rules/`.
-- Put reusable one-shot workflows in `prompts/`.
-- Put richer task guidance in `skills/<name>/SKILL.md`.
-- Keep everything concise and biased toward practical execution.
+**Personal Picks:**
+
+- [setup-matt-pocock-skills](https://github.com/mattpocock/skills/tree/main/skills/engineering/setup-matt-pocock-skills)
+- [grill-with-docs](https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs)
+- [improve-codebase-architecture](https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture)
+- [to-prd](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-prd)
+- [to-issue](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-issues)
+- [tdd](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd)
+- [prototype](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype)
+- [handoff](https://github.com/mattpocock/skills/tree/main/skills/productivity/handoff)
+
+2. [Jakub Krehel Better UI](https://github.com/jakubkrehel/make-interfaces-feel-better)
+
+Site: https://jakub.kr/writing/details-that-make-interfaces-feel-better
+
+```bash
+npx skills add jakubkrehel/make-interfaces-feel-better
+```
+
+3. [Emil Kowalski Design Engineer](https://github.com/emilkowalski/skill)
+
+Site: https://emilkowal.ski/skill
+
+```bash
+npx skills add emilkowalski/skill
+```
+
+4. [Google's Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance-src)
+
+```bash
+npx modern-web-guidance@latest install
+```
