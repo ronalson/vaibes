@@ -2,6 +2,14 @@
 
 A small library of reusable agent prompts and task-specific skills.
 
+## Install
+
+```bash
+npx skills@latest add ronalson/vaibes
+```
+
+> See https://github.com/vercel-labs/skills for more options.
+
 ## Skills
 
 | Skill | Use For | Not For |
