@@ -53,14 +53,9 @@ sync_skill() {
   rsync -a --delete --exclude '.DS_Store' "$src/" "$dest/"
 }
 
-sync_skill "setup-matt-pocock-skills" "skills/engineering/setup-matt-pocock-skills"
-sync_skill "grill-with-docs" "skills/engineering/grill-with-docs"
-sync_skill "improve-codebase-architecture" "skills/engineering/improve-codebase-architecture"
-sync_skill "to-prd" "skills/engineering/to-prd"
-sync_skill "to-issues" "skills/engineering/to-issues"
 sync_skill "tdd" "skills/engineering/tdd"
+sync_skill "codebase-design" "skills/engineering/codebase-design"
 sync_skill "prototype" "skills/engineering/prototype"
-sync_skill "handoff" "skills/productivity/handoff"
 
 cp "$source_dir/LICENSE" "$repo_root/vendor/mattpocock-skills-LICENSE"
 
@@ -70,14 +65,9 @@ cat > "$repo_root/vendor/mattpocock-skills.json" <<JSON
   "sourceCommit": "$source_commit",
   "license": "vendor/mattpocock-skills-LICENSE",
   "skills": {
-    "setup-matt-pocock-skills": "skills/engineering/setup-matt-pocock-skills",
-    "grill-with-docs": "skills/engineering/grill-with-docs",
-    "improve-codebase-architecture": "skills/engineering/improve-codebase-architecture",
-    "to-prd": "skills/engineering/to-prd",
-    "to-issues": "skills/engineering/to-issues",
     "tdd": "skills/engineering/tdd",
-    "prototype": "skills/engineering/prototype",
-    "handoff": "skills/productivity/handoff"
+    "codebase-design": "skills/engineering/codebase-design",
+    "prototype": "skills/engineering/prototype"
   }
 }
 JSON
