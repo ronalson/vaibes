@@ -1,7 +1,6 @@
 ---
 name: file-pr
-description: File a concise pull request. Use when the user asks to
-file, open, or create a PR.
+description: File a concise pull request. Use when the user asks to file, open, or create a PR.
 ---
 
 Create a pull request for the current branch using a clear title and a concise body.
