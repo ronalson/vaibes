@@ -3,7 +3,7 @@ name: handoff
 description: Compact the current conversation into a handoff document for another agent to pick up.
 ---
 
-Write a handoff markdown document summarising the current conversation so a fresh agent can continue the work. Save to the `@/docs/handoff` directory (create on with does not exist).
+Write a handoff markdown document summarising the current conversation so a fresh agent can continue the work. Save to the `@/context/handoff` directory (create on with does not exist).
 
 Do not duplicate content already captured in other artifacts (PRDs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.
 
