@@ -1,6 +1,6 @@
 {
   "remote": "https://github.com/mattpocock/skills.git",
-  "sourceCommit": "068b6e0",
+  "sourceCommit": "6654f6b",
   "license": "vendor/mattpocock-skills-LICENSE",
   "skills": {
     "tdd": "skills/engineering/tdd",
