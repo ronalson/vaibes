@@ -1,0 +1,11 @@
+{
+  "remote": "https://github.com/dmmulroy/skills.git",
+  "sourceCommit": "8603380",
+  "license": "vendor/dmmulroy-skills-LICENSE",
+  "skills": {
+    "type-spec": {
+      "path": "tech-spec",
+      "rename": "tech-spec"
+    }
+  }
+}
