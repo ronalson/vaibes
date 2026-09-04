@@ -62,7 +62,7 @@ Every Trace and primary Onboard path uses [callstack-format.md](references/calls
 
 Use project terms. Before describing module shape, read the `codebase-design` glossary. Then use its terms precisely: module, interface, implementation, seam, adapter, depth, leverage, and locality. Do not rename project concepts to fit those terms.
 
-Use one diagram only when it makes three or more relationships easier to understand. For broad requests, offer focused next cuts and stop. Do not offer next cuts instead of completing an explicit request.
+Use one diagram only when it makes three or more relationships easier to understand. Prefer `show-me` when the lesson needs a tree, Mermaid flow, diff sketch, or HTML artifact. For broad requests, offer focused next cuts and stop. Do not offer next cuts instead of completing an explicit request.
 
 Follow [teaching-voice.md](references/teaching-voice.md), then run `unslop` on the final prose.
 
@@ -76,6 +76,7 @@ Finish when the requested deliverable is grounded in opened code, every material
 
 ## Hand off at the right point
 
+- Use `show-me` when a diagram, tree, or HTML artifact would carry the lesson better than more prose — especially after Trace, Map, or Module, or when the user asks to "show" the path.
 - Use `type-spec` when the user understands the current system and wants to design a change.
 - Use `codebase-design` when the user wants to reshape a module.
 - Use `grill-me` when the user has thin context and needs to examine a new design.
