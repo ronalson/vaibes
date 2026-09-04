@@ -22,6 +22,7 @@ npx skills@latest add ronalson/vaibes
 | [`handoff`](./skills/handoff/SKILL.md) | Compacting the current conversation into a handoff document for another agent to pick up. | Permanent project documentation, PRDs, ADRs, or issue breakdowns. |
 | [`html-doc`](./skills/html-doc/SKILL.md) | Communicating specs, findings, reports, comparisons, and visualizations as a self-contained HTML document. | Plain-text answers or documents that must use another file format. |
 | [`prototype`](./skills/prototype/SKILL.md) | Building a throwaway prototype to explore a state model, business logic question, or UI direction before committing to it. | Production implementation, polished UI delivery, persistent data flows, or long-lived experiments. |
+| [`show-me`](./skills/show-me/SKILL.md) | Explaining the current topic with concise diagrams, code-shape sketches, and focused HTML artifacts. | Long prose lessons or visuals that do not answer the current question. |
 | [`technical-writting`](./skills/technical-writting/SKILL.md) | Writing or reviewing clear technical docs, RFCs, READMEs, PR descriptions, and commit messages. | Product UI copy or documentation outside the project's real terminology and behavior. |
 | [`tdd`](./skills/tdd/SKILL.md) | Building features or fixing bugs with a red-green-refactor loop and behavior-focused tests. | Bulk test generation, implementation-detail tests, or changes where tests are intentionally out of scope. |
 | [`type-spec`](./skills/type-spec/SKILL.md) | Creating implementation-ready architecture handoffs with typed contracts and call stacks. | Implementing the design or inventing requirements without enough context. |
@@ -40,6 +41,10 @@ npx skills@latest add ronalson/vaibes
 
 - [tech-spec](https://github.com/dmmulroy/skills/blob/main/tech-spec/SKILL.md) renamed to `type-spec`
 
+### [HumanLayer](https://github.com/humanlayer/skills)
+
+- [show-me](https://github.com/humanlayer/skills/tree/main/plugins/show-me/skills/show-me) (synced)
+
 ### [cursor plugins](https://github.com/cursor/plugins/tree/main/pstack)
 
 - **pstack**
@@ -55,4 +60,10 @@ Run the script to sync the selected skills from Matt Pocock: `tdd`, `codebase-de
 
 ```bash
 ./vendor/sync-mattpocock-skills.sh
+```
+
+Run the script to sync the selected skills from HumanLayer: `show-me`.
+
+```bash
+./vendor/sync-humanlayer-skills.sh
 ```
