@@ -40,11 +40,11 @@ For an Onboard or Map request, identify the request, job or worker, and public A
 
 ## Investigate only the needed slices
 
-For one function or file, explore and teach in one pass. For a subsystem or cross-cutting path, use two to four independent, read-only specialists when that improves the answer. Do not delegate to fill a template. If specialists are unavailable, perform the same slices sequentially.
+For one function or file, explore and teach in one pass. For Onboard, also explore and teach in one pass by default. Use Cartographer, Linguist, and Tracer only when the Onboard slice spans multiple packages, contexts, or entrypoint families — not for a small app or a single subsystem. For other modes, use two to four independent, read-only specialists when a subsystem or cross-cutting path warrants it. Do not delegate to fill a template. If specialists are unavailable, perform the same slices sequentially.
 
 | Mode | Specialists, when the scope warrants them |
 | --- | --- |
-| Onboard | Cartographer, Linguist, and Tracer for representative paths. |
+| Onboard | One pass by default. Cartographer, Linguist, and Tracer only when the slice spans multiple packages, contexts, or entrypoint families. |
 | Map | Cartographer, Linguist, and Seam mapper. |
 | Trace | Tracer. |
 | Module | Seam mapper and Linguist. Add Tracer for a necessary runtime path. |
