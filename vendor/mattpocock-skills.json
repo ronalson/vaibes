@@ -3,8 +3,18 @@
   "sourceCommit": "6654f6b",
   "license": "vendor/mattpocock-skills-LICENSE",
   "skills": {
-    "tdd": "skills/engineering/tdd",
-    "codebase-design": "skills/engineering/codebase-design",
-    "prototype": "skills/engineering/prototype"
+    "tdd": {
+      "path": "skills/engineering/tdd"
+    },
+    "codebase-design": {
+      "path": "skills/engineering/codebase-design"
+    },
+    "prototype": {
+      "path": "skills/engineering/prototype"
+    },
+    "grill-me": {
+      "path": "skills/productivity/grilling",
+      "rename": "grilling"
+    }
   }
 }

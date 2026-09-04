@@ -25,46 +25,41 @@ npx skills@latest add ronalson/vaibes
 | [`show-me`](./skills/show-me/SKILL.md) | Explaining the current topic with concise diagrams, code-shape sketches, and focused HTML artifacts. | Long prose lessons or visuals that do not answer the current question. |
 | [`technical-writting`](./skills/technical-writting/SKILL.md) | Writing or reviewing clear technical docs, RFCs, READMEs, PR descriptions, and commit messages. | Product UI copy or documentation outside the project's real terminology and behavior. |
 | [`tdd`](./skills/tdd/SKILL.md) | Building features or fixing bugs with a red-green-refactor loop and behavior-focused tests. | Bulk test generation, implementation-detail tests, or changes where tests are intentionally out of scope. |
-| [`teach-codebase`](./skills/teach-codebase/SKILL.md) | Teaching domain language, module seams, and typed call stacks so you can change a codebase safely. | Designing a change (`type-spec`), reshaping a module (`codebase-design`), or implementing code. |
 | [`type-spec`](./skills/type-spec/SKILL.md) | Creating implementation-ready architecture handoffs with typed contracts and call stacks. | Implementing the design or inventing requirements without enough context. |
 | [`unslop`](./skills/unslop/SKILL.md) | Editing writing to remove AI tells and give it a specific, human voice. | Changing the underlying meaning, facts, or intended tone. |
 
 ## Curated Skills
+
+Third-party skills are tracked in `vendor/*-skills.json` (remote, pinned commit, optional `rename`). Sync them with one script.
 
 ### [Matt Pocock](https://github.com/mattpocock/skills)
 
 - [tdd](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) (synced)
 - [codebase-design](https://github.com/mattpocock/skills/tree/main/skills/engineering/codebase-design) (synced)
 - [prototype](https://github.com/mattpocock/skills/tree/main/skills/engineering/prototype) (synced)
-- [grilling](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) renamed to `grill-me`
+- [grilling](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) renamed to `grill-me` (synced)
 
 ### [Dillon Mulroy](https://github.com/dmmulroy/skills)
 
-- [tech-spec](https://github.com/dmmulroy/skills/blob/main/tech-spec/SKILL.md) renamed to `type-spec`
+- [tech-spec](https://github.com/dmmulroy/skills/blob/main/tech-spec/SKILL.md) renamed to `type-spec` (synced)
 
 ### [HumanLayer](https://github.com/humanlayer/skills)
 
 - [show-me](https://github.com/humanlayer/skills/tree/main/plugins/show-me/skills/show-me) (synced)
 
-### [cursor plugins](https://github.com/cursor/plugins/tree/main/pstack)
+### [cursor plugins](https://github.com/cursor/plugins)
 
 - **pstack**
-  - [technical-writting](https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md)
-  - [unslop](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md)
-  - [bro](https://github.com/cursor/plugins/blob/main/pstack/skills/bro/SKILL.md)
+  - [technical-writing](https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) renamed to `technical-writting` (synced)
+  - [unslop](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md) (synced)
+  - [bro](https://github.com/cursor/plugins/blob/main/pstack/skills/bro/SKILL.md) (synced)
 - **cursor team kit**
-  - [deslop](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md)
+  - [deslop](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md) (synced)
 
 #### Syncing skills
 
-Run the script to sync the selected skills from Matt Pocock: `tdd`, `codebase-design`, and `prototype`.
-
 ```bash
-./vendor/sync-mattpocock-skills.sh
+./vendor/sync-skills.sh
 ```
 
-Run the script to sync the selected skills from HumanLayer: `show-me`.
-
-```bash
-./vendor/sync-humanlayer-skills.sh
-```
+Reads every `vendor/*-skills.json` track file, clones each remote, copies the listed skills into `skills/`, applies `rename` by rewriting `name:` in `SKILL.md`, refreshes LICENSE copies when configured, and updates `sourceCommit`.

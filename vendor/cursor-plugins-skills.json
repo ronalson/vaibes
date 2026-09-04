@@ -1,0 +1,19 @@
+{
+  "remote": "https://github.com/cursor/plugins.git",
+  "sourceCommit": "7314f72",
+  "skills": {
+    "bro": {
+      "path": "pstack/skills/bro"
+    },
+    "unslop": {
+      "path": "pstack/skills/unslop"
+    },
+    "technical-writting": {
+      "path": "pstack/skills/technical-writing",
+      "rename": "technical-writing"
+    },
+    "deslop": {
+      "path": "cursor-team-kit/skills/deslop"
+    }
+  }
+}

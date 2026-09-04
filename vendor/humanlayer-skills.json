@@ -4,6 +4,8 @@
   "sourceCommit": "6ab9013",
   "license": "vendor/humanlayer-skills-LICENSE",
   "skills": {
-    "show-me": "plugins/show-me/skills/show-me"
+    "show-me": {
+      "path": "plugins/show-me/skills/show-me"
+    }
   }
 }
