@@ -1,3 +1,5 @@
 interface:
   display_name: "Teach Codebase"
   short_description: "Teach domain language, seams, and typed call stacks"
+policy:
+  allow_implicit_invocation: true

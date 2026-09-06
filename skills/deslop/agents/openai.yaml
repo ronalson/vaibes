@@ -1,0 +1,5 @@
+interface:
+  display_name: "Deslop"
+  short_description: "Clean up AI-generated code style"
+policy:
+  allow_implicit_invocation: true

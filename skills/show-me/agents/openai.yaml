@@ -1,0 +1,5 @@
+interface:
+  display_name: "Show Me"
+  short_description: "Explain with focused visuals"
+policy:
+  allow_implicit_invocation: true

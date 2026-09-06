@@ -1,0 +1,5 @@
+interface:
+  display_name: "HTML Document"
+  short_description: "Create a polished single-file HTML document"
+policy:
+  allow_implicit_invocation: true

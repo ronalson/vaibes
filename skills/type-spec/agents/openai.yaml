@@ -1,0 +1,5 @@
+interface:
+  display_name: "Type Spec"
+  short_description: "Write a typed call-stack architecture handoff"
+policy:
+  allow_implicit_invocation: false
