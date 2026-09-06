@@ -27,7 +27,7 @@ Only use this when the thing being prototyped genuinely has no existing page to 
 
 Create a **throwaway route** following whatever routing convention the project already uses. Don't invent a new top-level structure. Name it so it's obviously a prototype (e.g. include the word `prototype` in the path or filename). Same `?variant=` pattern.
 
-Before committing to sub-shape B, sanity-check: is there really no existing page this could be embedded in? An empty route hides design problems that a populated one would expose.
+Before choosing sub-shape B, sanity-check: is there really no existing page this could be embedded in? An empty route hides design problems that a populated one would expose.
 
 In both sub-shapes the floating bottom bar is identical.
 
@@ -55,24 +55,26 @@ Variants must be **structurally different**: different layout, different informa
 
 ### 3. Wire them together
 
-Create a single switcher component on the route:
+Gate the entire prototype path behind the project's non-production check: reading `?variant=`, selecting and rendering variants, and rendering the switcher. Keep the query parameter and keyboard switching available only in non-production builds.
 
-```tsx
-// pseudo-code, adapt to the project's framework
-const variant = searchParams.get('variant') ?? 'A';
-return (
-  <>
-    {variant === 'A' && <VariantA {...data} />}
-    {variant === 'B' && <VariantB {...data} />}
-    {variant === 'C' && <VariantC {...data} />}
-    <PrototypeSwitcher variants={['A','B','C']} current={variant} />
-  </>
-);
+Framework-neutral pseudocode:
+
+```txt
+if sub-shape A:
+  if non-production:
+    variant = query parameter "variant" or "A"
+    render selected variant and PrototypeSwitcher
+  else:
+    render normal page content
+
+if sub-shape B:
+  register or expose the throwaway route only in non-production;
+  otherwise omit it from the production build or make it unreachable
 ```
 
 For sub-shape A (existing page): keep all the existing data fetching above the switcher; only the rendered subtree changes per variant.
 
-For sub-shape B (new page): the throwaway route under `/prototype/<name>` mounts the same switcher.
+For sub-shape B (new page): the non-production throwaway route under `/prototype/<name>` mounts the same switcher. It must not be reachable in production.
 
 ### 4. Build the floating switcher
 
@@ -87,7 +89,7 @@ Behaviour:
 - Clicking an arrow updates the URL search param (use the framework's router, e.g. `router.replace` on Next, `navigate` on React Router, etc) so the variant is shareable and reload-stable.
 - Keyboard: `←` and `→` arrow keys also cycle. Don't intercept arrow keys when an `<input>`, `<textarea>`, or `[contenteditable]` is focused.
 - Visually distinct from the page (e.g. high-contrast pill, subtle shadow) so it's obviously not part of the design being evaluated.
-- Hidden in production builds: gate on `process.env.NODE_ENV !== 'production'` or an equivalent check, so a stray prototype merge can't ship the bar to users.
+- This behavior belongs only to the non-production prototype path; do not leave variant parsing, rendering, or keyboard handlers reachable in production.
 
 Put the switcher in a single shared component so both sub-shapes can reuse it. Locate it wherever shared UI lives in the project.
 
@@ -95,14 +97,14 @@ Put the switcher in a single shared component so both sub-shapes can reuse it. L
 
 Surface the URL (and the `?variant=` keys). The user will flip through whenever they get to it. The interesting feedback is usually **"I want the header from B with the sidebar from C"**, which is the actual design they want.
 
-### 6. Capture the answer and clean up
+### 6. Hand over the result
 
-Once a variant has won, capture the answer (which variant and why), then capture the prototype the way the [SKILL](SKILL.md) describes. Fold the winner into the real code and move the rest onto the throwaway branch, not into main:
+State which variant best supports the decision and why. Leave the prototype runnable for review. Only fold a winner into the product, archive variants, or make a commit when the user asks:
 
-- **Sub-shape A**: fold the winner into the existing page; drop the losing variants and the switcher from main.
-- **Sub-shape B**: promote the winning variant to a real route; drop the throwaway route and the switcher from main.
+- **Sub-shape A**: a later implementation can use the selected direction in the existing page.
+- **Sub-shape B**: a later implementation can promote the selected direction to a real route.
 
-The full set of variants is the primary source, so it lands on the throwaway branch, not the bin, since variant components and the switcher left in the main branch rot fast and confuse the next reader.
+Prototype code is not production-ready. Rewrite it to meet the destination project's requirements before shipping it.
 
 ## Anti-patterns
 

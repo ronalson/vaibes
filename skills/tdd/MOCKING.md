@@ -1,21 +1,20 @@
 # When to Mock
 
-Mock at **system boundaries** only:
+Prefer real collaborators and test doubles at system boundaries:
 
 - External APIs (payment, email, etc.)
 - Databases (sometimes - prefer test DB)
 - Time/randomness
 - File system (sometimes)
 
-Don't mock:
+Avoid mocks that merely mirror your own implementation:
 
 - Your own classes/modules
-- Internal collaborators
-- Anything you control
+- Internal collaborators unless a focused internal test has a clear reason for a double
 
 ## Designing for Mockability
 
-At system boundaries, design interfaces that are easy to mock:
+At system boundaries, design interfaces that are easy to substitute in tests:
 
 **1. Use dependency injection**
 

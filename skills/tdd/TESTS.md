@@ -17,10 +17,10 @@ test("user can checkout with valid cart", async () => {
 Characteristics:
 
 - Tests behavior users/callers care about
-- Uses public API only
+- Prefers public APIs; uses internal seams only for a justified local invariant or pure calculation
 - Survives internal refactors
 - Describes WHAT, not HOW
-- One logical assertion per test
+- Assertions focused on one observable behavior
 
 ## Bad Tests
 
@@ -35,12 +35,12 @@ test("checkout calls paymentService.process", async () => {
 });
 ```
 
-Red flags:
+Red flags, unless a focused internal test protects a local invariant or pure calculation, or a double represents a real boundary:
 
-- Mocking internal collaborators
-- Testing private methods
+- Mocking internal collaborators without a focused reason
+- Testing private methods without a focused reason
 - Asserting on call counts/order
-- Test breaks when refactoring without behavior change
+- Test breaks when refactoring without behavior change and protects no local concern
 - Test name describes HOW not WHAT
 - Verifying through external means instead of interface
 

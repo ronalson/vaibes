@@ -17,15 +17,11 @@ This skill is design-only. Do not implement. Save a file only when the user asks
 
 If a question can be answered by exploring the codebase, inspect the codebase instead of asking.
 
-Completion criterion: the branch is chosen from actual available context; missing architectural decisions are not invented.
-
 ## Path A: Convert context to spec
 
 ### 1. Load standards and local context
 
-Inspect existing code and docs for local vocabulary, module layout, domain concepts, errors, adapters, observability, runtime patterns, and test style.
-
-Completion criterion: the spec uses project vocabulary and does not introduce a pattern, library, adapter, schema style, or test strategy before checking local precedent.
+Inspect existing code and docs for local vocabulary, module layout, domain concepts, errors, adapters, observability, runtime patterns, and test style. Before introducing a pattern, library, adapter, schema style, or test strategy, check local precedent; if none applies, record that as an open question or a deliberate proposal.
 
 ### 2. Extract the design problem
 
@@ -46,11 +42,11 @@ Capture:
 
 Mark unknowns as open questions instead of filling gaps with plausible design.
 
-Completion criterion: every claimed requirement or constraint is grounded in conversation, code, docs, or an explicit open question.
+### 3. Explore alternatives when needed
 
-### 3. Explore design alternatives
+When a material design choice remains unresolved, compare materially different alternatives. They should differ in interface shape, seam placement, ownership, call stack, runtime topology, or module boundaries, not just names. Use `codebase-design` and [DESIGN-IT-TWICE.md](../codebase-design/DESIGN-IT-TWICE.md) when they help assess the choice. Develop alternatives in one pass unless independent parallel exploration would add useful evidence.
 
-Produce materially different alternatives before choosing the recommended design. Alternatives should differ in interface shape, seam placement, ownership, call stack, runtime topology, or module boundaries — not just names. Call the Skill tool with `codebase-design` and DESIGN-IT-TWICE reference.
+If the design is already agreed, record that decision and proceed without inventing alternatives.
 
 For each alternative, sketch:
 
@@ -77,8 +73,6 @@ Compare alternatives on:
 - operational/runtime fit;
 - implementation complexity.
 
-Completion criterion: the recommendation is chosen after comparing alternatives, not before.
-
 ### 4. Specify the recommended typed contracts
 
 For the recommended design, outline every new, changed, or deleted:
@@ -99,7 +93,7 @@ For the recommended design, outline every new, changed, or deleted:
 
 Name seams, adapters, implementations, ownership boundaries, and what crosses each boundary. State what each layer may know and what must not leak across the seam.
 
-Completion criterion: every new or changed boundary has a concrete type/interface/API sketch, or an explicit reason no new contract is needed.
+Map every planned contract to its owning file or module, or an explicit open question.
 
 ### 5. Specify call stacks and data flow
 
@@ -121,7 +115,7 @@ raw input
 
 Include current vs proposed flow when changing existing behavior. Include failure, retry, cancellation, transactionality, idempotency, observability, authorization, and runtime-hop flow when reachable.
 
-Completion criterion: every affected behavior has an end-to-end call stack and type/data-flow trace.
+Map every meaningful call-stack step to a file or module, or an explicit open question.
 
 ### 6. Map files and modules
 
@@ -135,15 +129,13 @@ List:
 
 For each file, state the contract, code path, boundary, adapter, domain concept, or test responsibility it owns.
 
-Completion criterion: every contract and call-stack step maps to a file/module or an open question.
-
 ### 7. Write the RGR TDD test plan
 
-Use the sibling TDD workflow and testing standards. Plan vertical Red-Green-Refactor slices: one failing behavior test, minimal implementation, repeat. Do not write a horizontal "all tests first, all code later" plan.
+Use the sibling TDD workflow and testing standards. Plan vertical Red-Green-Refactor slices: one failing behavior test, minimal implementation, refactor without changing behavior, rerun the affected tests, then repeat. Do not write a horizontal "all tests first, all code later" plan.
 
 Favor behavior through public interfaces and real seams over implementation-coupled mocks.
 
-Cover proportionately:
+Cover proportionately, based on meaningful behavior and likely failures:
 
 - happy paths;
 - failure paths;
@@ -155,86 +147,25 @@ Cover proportionately:
 - observability and safe summaries where relevant;
 - end-to-end flows for high-consequence behavior.
 
-Completion criterion: every public behavior, invariant, important failure path, changed boundary, and changed seam has a red test slice or an explicit reason not to test it.
-
 ### 8. Produce the spec
 
 Return the spec inline unless the user requested a file path. If a file was requested, save it there.
 
 Do not implement and do not ask to implement by default.
 
-Completion criterion: the output follows the outline below and is implementation-ready for another engineer.
-
 ## Path B: Grill first
 
 1. Do not write a full spec yet.
    - State that there is not enough context for an implementation-ready tech spec.
-   - Completion criterion: the agent has not invented requirements, APIs, files, or call stacks.
-2. Start a grilling interview. Call the Skill tool with `grill-me`.
-   - Ask one question at a time and provide the recommended answer with each question.
+2. Start a grilling interview. Use `grill-me`.
+   - Ask the current frontier of independent, material questions as a round, with a recommended answer for each.
    - If a question can be answered by exploring the codebase, inspect the codebase instead of asking.
-   - Completion criterion: the interview has enough context for Path A: problem, users/callers, constraints, affected systems, desired behavior, boundaries, likely APIs, invariants, risks, and acceptance tests.
 3. Convert to the spec.
    - Once grilling context is sufficient, run Path A.
-   - Completion criterion: the final artifact is a typed call-stack architecture handoff, not interview notes.
 
-## Required spec outline
+## Spec template
 
-Use this shape unless the task is tiny enough to compress without losing contracts or call stacks:
-
-```md
-# <Title>
-
-## Summary
-
-## Context / Current State
-
-## Goals
-
-## Non-Goals
-
-## Invariants
-
-## Design Constraints
-
-## Alternatives Considered
-
-### Option 1: <name>
-
-### Option 2: <name>
-
-### Option 3: <name>
-
-## Recommendation
-
-## Proposed Design
-
-## Domain Model and Types
-
-## Types, Interfaces, and APIs
-
-## Seams, Boundaries, Adapters, and Implementations
-
-## Call Stacks and Data Flow
-
-### Current / Old Flow
-
-### Proposed / New Flow
-
-### Failure Flow
-
-### Retry / Cancellation / Idempotency Flow
-
-### Observability Flow
-
-## Files to Add / Change / Delete
-
-## RGR TDD Test Plan
-
-## Risks and Open Questions
-```
-
-Omit sections that truly do not apply, but do not omit typed contracts, seams, call stacks, or tests merely because they are hard to specify.
+Start from [templates/type-spec.md](templates/type-spec.md) when a full structure helps. Omit sections that do not apply, but retain the contracts, call stacks, and tests needed to make the design safe to implement.
 
 ## Writing rules
 
@@ -246,4 +177,7 @@ Omit sections that truly do not apply, but do not omit typed contracts, seams, c
 - Avoid speculative abstraction; every seam earns its existence through invariants, locality, leverage, testing, or a real boundary.
 - Keep a single source of truth; do not restate the same rule in multiple sections unless one section points to the other.
 - Unknowns stay open questions. Do not invent product requirements, domain rules, APIs, or call stacks to make the spec feel complete.
-- Call the Skill tool with `unslop` to review the spec writting.
+
+## Completion
+
+Finish with a design-only handoff that uses local vocabulary, grounds requirements in local precedent, evidence, or open questions, preserves agreed decisions, and gives unresolved material choices enough evidence for a recommendation. Include the contracts, call stacks, file mapping, and proportionate test plan needed for another engineer to implement the change safely.
