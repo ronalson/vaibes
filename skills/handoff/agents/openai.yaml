@@ -2,4 +2,4 @@ interface:
   display_name: "Handoff"
   short_description: "Create a handoff for another agent"
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

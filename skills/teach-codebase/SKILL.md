@@ -1,6 +1,7 @@
 ---
 name: teach-codebase
 description: Explain an existing codebase, subsystem, runtime path, or symbol so the user can change it safely.
+disable-model-invocation: true
 ---
 
 # Teach codebase
