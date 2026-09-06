@@ -1,6 +1,6 @@
 # Specialist prompts
 
-Give every specialist the constraints in [investigation-contract.md](investigation-contract.md). Specialists return evidence, contradictions, and open questions. They do not write the lesson.
+Use these prompts only when independent, read-only exploration would materially help. Give every specialist the constraints in [investigation-contract.md](investigation-contract.md). Specialists return evidence, contradictions, and open questions. They do not write the lesson.
 
 ## Cartographer
 
@@ -43,7 +43,7 @@ Evidence: `file:symbol`
 
 ## Tracer
 
-Follow one trigger through callers, callees, representations, state, I/O, and effects. Return the table in [callstack-format.md](callstack-format.md), then add:
+Follow one trigger through callers, callees, representations, state, I/O, and effects. Return a hop table when it clarifies the trace, then add only the relevant sections below:
 
 ```md
 ## Failure flow
@@ -58,7 +58,7 @@ Follow one trigger through callers, callees, representations, state, I/O, and ef
 
 Stop at the last effect that code proves, or an explicit gap.
 
-The hop table must show input, output, errors, effects, evidence, representation changes, and state reads or writes that matter to the path. Read tests around the public seam before calling the trace complete.
+Include inputs, outputs, errors, effects, evidence, representation changes, and state reads or writes that matter to the path. Read tests around the public seam before calling the trace complete.
 
 ## Seam mapper
 

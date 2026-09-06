@@ -1,6 +1,6 @@
 # Call stack format
 
-Use this format for every Trace and primary Onboard path. Use project types. If the code uses strings, say strings.
+Use this format when a Trace or primary Onboard path needs a hop table. Use project types. If the code uses strings, say strings.
 
 ```txt
 trigger
@@ -18,9 +18,7 @@ trigger
 | --- | --- | --- | --- | --- | --- |
 | `file:symbol` | input type | output type | expected error | state, I/O, or external effect | `file:symbol` |
 
-Every hop names `file:symbol` or **open question**. Do not invent branded types or a missing step.
-
-Use the table for the primary path. Add a row only when it changes the input, output, error handling, state, I/O, or observable result. A framework callback with no relevant behavior can remain inside the previous hop's explanation.
+Every material hop names `file:symbol` or **open question**. Do not invent branded types or a missing step. Add a row only when it changes the input, output, error handling, state, I/O, or observable result. A framework callback with no relevant behavior can remain inside the previous hop's explanation.
 
 When a value changes across a seam, add a representation line. For example:
 

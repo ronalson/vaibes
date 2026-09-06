@@ -1,82 +1,42 @@
 ---
 name: teach-codebase
-description: Teach a person an existing codebase, subsystem, runtime path, or symbol so they can change it safely. Use for teach me this codebase, help me understand this repo, onboard me onto this subsystem, how does this path work, walk me through this request, where does X live, or what happens when a user does Y.
+description: Explain an existing codebase, subsystem, runtime path, or symbol so the user can change it safely.
 ---
 
 # Teach codebase
 
-Teach the current system so a later `type-spec` or edit is grounded. Do not implement, write a spec, redesign a module, or quiz the user.
+Teach the current system without changing it. Do not write a spec, redesign a module, or quiz the user. Reply in the conversation unless the user explicitly asks for a saved map.
 
-The conversation is the default output. Write a mental-model file only when the user explicitly asks for one.
+## Start from the target
 
-## Route the request
+Read applicable repository instructions first. Then explore the smallest slice that answers the request:
 
-Read the user's intent from the conversation. Do not interrogate them. If the scope is ambiguous, state the interpretation and proceed.
+- Start at a named file or symbol and walk outward.
+- For a repository or subsystem, find the relevant entrypoint and one coherent path.
+- For a planned change, trace the behavior it would affect, its seam, protected tests, effects, and unknowns.
 
-If the user names a file or symbol, start there and walk outward. Use a top-down reading for a repository or subsystem. Use a change-oriented reading when the user plans an edit.
+Treat file names and conventions as leads, not proof. Open the code, configuration, tests, and documentation behind each material claim. Read [investigation-contract.md](references/investigation-contract.md) when the requested path is non-trivial. Read [rationale-epistemics.md](references/rationale-epistemics.md) only for a why question or non-obvious constraint.
 
-| Mode | When | First deliverable |
-| --- | --- | --- |
-| Onboard | New to the repo or a large subsystem | Smallest coherent system map, one primary trace, glossary, and next cuts. |
-| Map | They need architecture and language | Contexts, entrypoints, ownership, seams, and external systems. |
-| Trace | They ask what happens when X | One evidence-backed hop table with failures and effects. |
-| Module | They name a module | Interface, invariants, callers, dependencies, tests, adapters, and leaks. |
-| Change-ready | They plan an edit | Preserve, likely touch, tests, blast radius, effects, and unknowns. |
-| Reconcile | They bring an existing model | Confirmed claims, contradictions, corrections, and unresolved claims. |
+## Choose depth that fits
 
-For a bare "teach me this codebase," use Onboard for the smallest coherent system, not the whole monorepo.
-
-The mode selects the first deliverable. The request sets the depth. For a broad request, give one complete layer and offer next cuts. For an explicit trace or change-ready request, finish the requested scope in the current reply.
-
-## Orient before tracing
-
-Before exploring, identify the language, package manager, application kind, entrypoints, test layout, and local observability names. Read `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-MAP.md`, the README, and relevant ADRs when present. If a file is absent, continue.
-
-Treat folders and framework conventions as leads. Do not treat them as proof of ownership or runtime behavior. Use the repository's vocabulary. Do not invent a glossary that the codebase did not name.
-
-Read [investigation-contract.md](references/investigation-contract.md) before investigating. Read [rationale-epistemics.md](references/rationale-epistemics.md) before explaining why a design exists.
-
-For an Onboard or Map request, identify the request, job or worker, and public API entrypoints that exist. For a Trace, Module, or Change-ready request, inventory only the entrypoints and tests needed for that target.
-
-## Investigate only the needed slices
-
-For one function or file, explore and teach in one pass. For Onboard, also explore and teach in one pass by default. Use Cartographer, Linguist, and Tracer only when the Onboard slice spans multiple packages, contexts, or entrypoint families — not for a small app or a single subsystem. For other modes, use two to four independent, read-only specialists when a subsystem or cross-cutting path warrants it. Do not delegate to fill a template. If specialists are unavailable, perform the same slices sequentially.
-
-| Mode | Specialists, when the scope warrants them |
+| Request | Deliverable |
 | --- | --- |
-| Onboard | One pass by default. Cartographer, Linguist, and Tracer only when the slice spans multiple packages, contexts, or entrypoint families. |
-| Map | Cartographer, Linguist, and Seam mapper. |
-| Trace | Tracer. |
-| Module | Seam mapper and Linguist. Add Tracer for a necessary runtime path. |
-| Change-ready | Tracer and Seam mapper. Add Historian for a constraint that needs explanation. |
-| Reconcile | Tracer against the stated model. Add Linguist for term conflicts. |
-| Why or unusual shape | Historian, with a narrow question. |
+| Onboard or map | A small system map, one primary path, and focused next cuts. |
+| Trace | An evidence-backed path with inputs, outputs, errors, effects, and tests that matter. |
+| Module | Interface, callers, dependencies, invariants, adapters, and leaks. |
+| Change-ready | Preserve, likely touch, tests, downstream effects, and unknowns. |
+| Reconcile | Confirmed claims, corrections, contradictions, and unresolved claims. |
 
-Use [agent-prompts.md](references/agent-prompts.md) for the specialist schemas. Reconcile the evidence before writing. The primary agent writes the explanation. Do not require a separate Teacher handoff.
+Use [callstack-format.md](references/callstack-format.md) for a trace when its hop table clarifies the answer. Load the `codebase-design` glossary only when explaining module shape. Delegate read-only exploration only when independent slices would materially help; otherwise investigate sequentially. Use [agent-prompts.md](references/agent-prompts.md) only when delegating.
 
-## Teach one useful layer
+## Explain what the evidence supports
 
-Lead with one or two sentences that name the thing in this repository. Explain its mechanism instead of touring functions. Anchor broad explanations in a real behavior.
+Lead with the thing and its mechanism, not a file tour. Use project terms and distinguish direct evidence, supported conclusions, inference, and unknowns. Each material trace hop must name `file:symbol` or an open question. Cover representations, state, I/O, errors, effects, and tests only where they affect the requested path.
 
-Every Trace and primary Onboard path uses [callstack-format.md](references/callstack-format.md). Every material hop is `file:symbol` or **open question**. State representations, state ownership, I/O, effects, errors, and tests when they matter to the path.
+Use a visual only when it makes three or more relationships clearer. `show-me` can provide that visual, but it is optional and does not require the `html-doc` workflow.
 
-Use project terms. Before describing module shape, read the `codebase-design` glossary. Then use its terms precisely: module, interface, implementation, seam, adapter, depth, leverage, and locality. Do not rename project concepts to fit those terms.
+For substantial, broad, or change-ready explanations, read [teaching-voice.md](references/teaching-voice.md) before drafting so the explanation stays at one useful layer and ends a change-ready answer with the required preservation and risk summary.
 
-Use one diagram only when it makes three or more relationships easier to understand. Prefer `show-me` when the lesson needs a tree, Mermaid flow, diff sketch, or HTML artifact. For broad requests, offer focused next cuts and stop. Do not offer next cuts instead of completing an explicit request.
+## Finish at the requested boundary
 
-Follow [teaching-voice.md](references/teaching-voice.md), then run `unslop` on the final prose.
-
-## Save only on request
-
-If the user asks to save the map, use [MENTAL-MODEL.template.md](assets/MENTAL-MODEL.template.md). Keep glossary entries free of implementation detail. Do not create or update `CONTEXT.md` as a side effect of teaching.
-
-## Completion rule
-
-Finish when the requested deliverable is grounded in opened code, every material gap is visible, and the explanation has no invented hop. For a broad request, stop after the first useful layer. For a bounded request, stop after the requested path, module, or change map is complete.
-
-## Hand off at the right point
-
-- Use `show-me` when a diagram, tree, or HTML artifact would carry the lesson better than more prose — especially after Trace, Map, or Module, or when the user asks to "show" the path.
-- Use `type-spec` when the user understands the current system and wants to design a change.
-- Use `codebase-design` when the user wants to reshape a module.
-- Use `grill-me` when the user has thin context and needs to examine a new design.
+For a broad request, stop after the first useful layer and offer focused next cuts. For a bounded request, finish the requested path, module, or change map in the current reply. If the user asks for a saved map, use [MENTAL-MODEL.template.md](assets/MENTAL-MODEL.template.md); otherwise do not create or update repository context files.
