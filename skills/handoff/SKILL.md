@@ -3,7 +3,9 @@ name: handoff
 description: Compact the current conversation into a handoff document for another agent to pick up.
 ---
 
-Write a handoff markdown document summarising the current conversation so a fresh agent can continue the work. Save to the `@/context/handoff` directory (create on with does not exist).
+Write a handoff markdown document summarising the current conversation so a fresh agent can continue the work. By default, save it in `<repo-root>/context/handoff/`, creating that directory when it does not exist. Use a descriptive, non-overwriting filename such as `YYYY-MM-DD-topic.md`; add a suffix when that name already exists.
+
+Include the objective, constraints, completed work, remaining work, relevant references, and verification status.
 
 Do not duplicate content already captured in other artifacts (PRDs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.
 

@@ -15,7 +15,7 @@ The document loads Tailwind from a CDN, so full styling requires network access.
 2. Choose a structure that fits the artifact. Use a visual only when it communicates better than prose.
 3. Start from [html-document-scaffold.html](assets/html-document-scaffold.html). Keep its theme toggle, accessible behavior, semantic status colors, and print treatment. Set `lang` and replace the placeholder content.
 4. Use semantic HTML, a logical heading hierarchy, real tables for tabular data, readable narrow-screen layout, and useful alt text. Keep external links safe with `target="_blank"` and `rel="noopener noreferrer"`.
-5. Keep the page static apart from the required theme toggle. Do not load scripts other than Tailwind and, when needed, Mermaid. Embed images as data URLs when portability matters; otherwise use HTTPS sources, never machine-local paths. Give meaningful inline SVGs a `<title>` and `<desc>`.
+5. Keep the page static by default. Retain the scaffold's theme behavior, and add at most one small inline classic script only when the user explicitly requests interactivity or it is essential to understanding the document. Do not load other external or module scripts beyond Tailwind and, when needed, Mermaid. Do not use em dashes in generated prose unless the user requests them. Embed images as data URLs when portability matters; otherwise use HTTPS sources, never machine-local paths. Give meaningful inline SVGs a `<title>` and `<desc>`.
 
 When the user asks for variants, render the requested alternatives in the same file and label them `A`, `B`, and so on. Place them side by side on wide screens and stack them on narrow screens.
 

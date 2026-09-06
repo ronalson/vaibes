@@ -16,10 +16,10 @@ npx skills@latest add ronalson/vaibes
 | --- | --- | --- |
 | [`bro`](./skills/bro/SKILL.md) | Restating the previous message in plain, concise language. | Providing new analysis, instructions, or technical detail. |
 | [`codebase-design`](./skills/codebase-design/SKILL.md) | Designing deep modules, improving interfaces, finding seams, and making code easier to test or navigate. | General implementation work that does not involve module or interface design. |
-| [`deslop`](./skills/deslop/SKILL.md) | Reviewing a branch diff to remove AI-generated code slop while preserving behavior. | Broad refactors, intentional behavior changes, or solving unclear bugs. |
-| [`file-pr`](./skills/file-pr/SKILL.md) | Opening or updating a pull request with a clear title and concise body. | Making commits or changing the implementation. |
+| [`deslop`](./skills/deslop/SKILL.md) | Reviewing a branch diff against a requested or discovered base to remove AI-generated code slop while preserving behavior. | Broad refactors, intentional behavior changes, or solving unclear bugs. |
+| [`file-pr`](./skills/file-pr/SKILL.md) | Opening a pull request or updating an existing one within the request, with a clear title and concise body. | Making commits, pushes, or implementation changes. |
 | [`grill-me`](./skills/grill-me/SKILL.md) | Relentlessly stress-testing a plan, decision, or idea through structured questions. | Implementation or lightweight brainstorming that does not need a decision audit. |
-| [`handoff`](./skills/handoff/SKILL.md) | Compacting the current conversation into a handoff document for another agent to pick up. | Permanent project documentation, PRDs, ADRs, or issue breakdowns. |
+| [`handoff`](./skills/handoff/SKILL.md) | Compacting the current conversation into a redacted handoff document in `context/handoff/` for another agent to pick up. | Permanent project documentation, PRDs, ADRs, or issue breakdowns. |
 | [`html-doc`](./skills/html-doc/SKILL.md) | Creating a single-file HTML document for specs, findings, reports, comparisons, and visualizations. Its CDN styling requires network access. | Plain-text answers or documents that must use another file format. |
 | [`prototype`](./skills/prototype/SKILL.md) | Building a throwaway prototype to explore a state model, business logic question, or UI direction before committing to it. | Production implementation, polished UI delivery, persistent data flows, or long-lived experiments. |
 | [`show-me`](./skills/show-me/SKILL.md) | Explaining the current topic with concise diagrams, code-shape sketches, and focused HTML artifacts. | Long prose lessons or visuals that do not answer the current question. |

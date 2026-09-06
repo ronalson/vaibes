@@ -12,7 +12,7 @@ Reserve color for meaning:
 
 Use status color sparingly in small labels, icons, borders, badges, or muted callouts. Pair it with a text label and, when useful, an icon or border distinction. Do not use saturated color as decoration or as the only way to communicate a distinction.
 
-Use semantic HTML and CSS for comparisons, matrices, callouts, and annotated text. Use Mermaid for flows and relationships. Use inline SVG for spatial or editorial visuals that need precise composition. Keep wide tables and diagrams usable on narrow screens. Prefer `currentColor` or theme variables for custom SVGs.
+Use semantic HTML and CSS for comparisons, matrices, callouts, and annotated text. Use Mermaid for flows and relationships. Use inline SVG for spatial or editorial visuals that need precise composition. Choose the technique that best communicates the content; do not mix techniques merely for variety. Aim for diagrams around 320px tall when practical, and keep wide tables and diagrams usable on narrow screens. Prefer `currentColor` or theme variables for custom SVGs.
 
 When a document adds a Tailwind color utility beyond the grayscale system, add its dark-mode override. Preserve readable contrast in both themes. Give meaningful inline SVGs a `<title>` and `<desc>`.
 
