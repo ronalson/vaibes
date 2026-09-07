@@ -14,6 +14,7 @@ npx skills@latest add ronalson/vaibes
 
 | Skill | Use For | Not For |
 | --- | --- | --- |
+| [`ask-astra`](./skills/ask-astra/SKILL.md) | Letting Sol consult a read-only Astra advisor for difficult decisions, architectural trade-offs, or an independent review. | Routine implementation, searches, or verification. |
 | [`bro`](./skills/bro/SKILL.md) | Restating the previous message in plain, concise language. | Providing new analysis, instructions, or technical detail. |
 | [`codebase-design`](./skills/codebase-design/SKILL.md) | Designing deep modules, improving interfaces, finding seams, and making code easier to test or navigate. | General implementation work that does not involve module or interface design. |
 | [`deslop`](./skills/deslop/SKILL.md) | Reviewing a branch diff against a requested or discovered base to remove AI-generated code slop while preserving behavior. | Broad refactors, intentional behavior changes, or solving unclear bugs. |
