@@ -16,6 +16,7 @@ npx skills@latest add ronalson/vaibes
 | --- | --- | --- |
 | [`ask-astra`](./skills/ask-astra/SKILL.md) | Letting Sol consult a read-only Astra advisor for difficult decisions, architectural trade-offs, or an independent review. | Routine implementation, searches, or verification. |
 | [`bro`](./skills/bro/SKILL.md) | Restating the previous message in plain, concise language. | Providing new analysis, instructions, or technical detail. |
+| [`breakdown`](./skills/breakdown/SKILL.md) | Splitting a settled plan into vertical, reviewable phases with waves and review gates. | Breaking down a plan the user has not agreed to, or horizontal layering. |
 | [`codebase-design`](./skills/codebase-design/SKILL.md) | Designing deep modules, improving interfaces, finding seams, and making code easier to test or navigate. | General implementation work that does not involve module or interface design. |
 | [`deslop`](./skills/deslop/SKILL.md) | Reviewing a branch diff against a requested or discovered base to remove AI-generated code slop while preserving behavior. | Broad refactors, intentional behavior changes, or solving unclear bugs. |
 | [`file-pr`](./skills/file-pr/SKILL.md) | Opening a pull request or updating an existing one within the request, with a clear title and concise body. | Making commits, pushes, or implementation changes. |
@@ -46,3 +47,4 @@ The skills below began as upstream work and are now locally maintained adaptatio
 | `unslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md) | `unslop` | `7314f72` |
 | `technical-writing` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) | `technical-writing` | `7314f72` |
 | `deslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md) | `deslop` | `7314f72` |
+| `breakdown` | [ronalson/cc-subagents](https://github.com/ronalson/cc-subagents/blob/main/plugins/cc-subagents/skills/breakdown/SKILL.md) | `breakdown` | ported locally |
