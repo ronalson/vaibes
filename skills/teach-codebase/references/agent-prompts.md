@@ -85,7 +85,7 @@ Run only for a why question or a non-obvious constraint. Search narrow local evi
 
 ```md
 ## Claims
-- claim — citation — direct, supported, inferred, speculative, or unknown
+- direct, supported, inferred, speculative, or unknown
 ## Searched but empty
 ## Contradictions
 ## Open questions

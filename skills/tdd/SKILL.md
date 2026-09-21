@@ -34,3 +34,7 @@ When the interface shape is itself in question, use `codebase-design` as a desig
 - **Red before green.** Write the failing test first, then only enough code to pass it. Don't anticipate future tests or add speculative features.
 - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
 - **Refactor after green.** Once the test passes, improve the design without changing behavior, then rerun the affected tests.
+
+## Closure
+
+After the final green for the requested work, rerun the affected tests once more and inspect the full diff of your changes before reporting done. Do not treat an earlier green as proof after later edits.

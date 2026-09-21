@@ -19,3 +19,4 @@ Creating or updating a PR does not authorize commits or pushes. Obtain separate 
 - Mention affected user behavior, important implementation decisions, and anything a reviewer should inspect closely.
 - Include `Closes #123` or equivalent only when the linked issue is known.
 - Report verification that ran, did not run, is unavailable, or is unknown accurately. Ask the user only when a material unresolved choice prevents filing or updating the PR.
+- Verification claims must reflect checks run after the last commit that will be in the PR, not earlier runs.
