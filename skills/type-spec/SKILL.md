@@ -181,3 +181,5 @@ Start from [templates/type-spec.md](templates/type-spec.md) when a full structur
 ## Completion
 
 Finish with a design-only handoff that uses local vocabulary, grounds requirements in local precedent, evidence, or open questions, preserves agreed decisions, and gives unresolved material choices enough evidence for a recommendation. Include the contracts, call stacks, file mapping, and proportionate test plan needed for another engineer to implement the change safely.
+
+State **Accept when** (what makes the design ready to implement) and **Stop and ask if** (open questions that block implementation).
