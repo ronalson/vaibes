@@ -16,7 +16,7 @@ Pick the fewest agents that can finish. Most tasks need one or two, not all four
 - `scout` — you do not yet know where the relevant code lives, or a later agent needs a compressed map of it.
 - `worker` — implementation. Name the spec file when one exists.
 - `reviewer` — the change is risky, touches security or data, or the user asked for review.
-- `advisor` — a genuinely difficult decision or architectural trade-off stands between you and a plan. One consult per question. Prefer `ask-astra` when that skill is available for the advisor path.
+- `advisor` — a genuinely difficult decision or architectural trade-off stands between you and a plan. One consult per question.
 
 Run agents in sequence when a later one needs an earlier one's output, which is the common case. Run them concurrently only when their work is genuinely independent. Never run `advisor` alongside `worker`. Isolate concurrent writers so they do not touch the same files; reconcile their results on the main thread.
 
