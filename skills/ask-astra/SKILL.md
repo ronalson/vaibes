@@ -80,7 +80,7 @@ Sol sends the relevant findings back to the advisor. Do not forward a raw search
 
 Sol evaluates the advice, makes the decision, implements authorized changes, and runs appropriate checks. Advisor review is not verification. Report any material disagreement or remaining uncertainty without seeking another review automatically.
 
-For high-value consultations—architecture decisions, substantial trade-offs, or consequential reviews—Sol saves the advisor's substantive output in `<repo-root>/context/advisor/YYYY-MM-DD-topic.md`. Create the directory when needed and add a suffix rather than overwriting an existing note. Save before context is lost, even if implementation remains pending.
+For high-value consultations - architecture decisions, substantial trade-offs, or consequential review - Sol saves the advisor's substantive output in `<repo-root>/context/advisor/YYYY-MM-DD-topic.md`. Create the directory when needed and add a suffix rather than overwriting an existing note. Save before context is lost, even if implementation remains pending.
 
 Keep the note compact and reusable across tasks. Include:
 
