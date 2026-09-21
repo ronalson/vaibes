@@ -1,0 +1,5 @@
+interface:
+  display_name: "Breakdown"
+  short_description: "Split a settled plan into reviewable phases"
+policy:
+  allow_implicit_invocation: false

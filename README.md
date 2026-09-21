@@ -48,5 +48,3 @@ The skills below began as upstream work and are now locally maintained adaptatio
 | `unslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md) | `unslop` | `7314f72` |
 | `technical-writing` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) | `technical-writing` | `7314f72` |
 | `deslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md) | `deslop` | `7314f72` |
-| `breakdown` | [ronalson/cc-subagents](https://github.com/ronalson/cc-subagents/blob/main/plugins/cc-subagents/skills/breakdown/SKILL.md) | `breakdown` | ported locally |
-| `delegate` | [ronalson/cc-subagents](https://github.com/ronalson/cc-subagents/blob/main/plugins/cc-subagents/skills/delegate/SKILL.md) | `delegate` | ported locally |

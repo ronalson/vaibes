@@ -1,0 +1,5 @@
+interface:
+  display_name: "Delegate"
+  short_description: "Delegate implementation to specialized agents"
+policy:
+  allow_implicit_invocation: false
