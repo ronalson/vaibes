@@ -7,7 +7,7 @@ description: Split a settled plan into vertical phases that agents can execute i
 
 Turn a plan into phases. A phase is a block of implementation that lands working behavior and can be reviewed without reading the phases around it. Sequence the phases by what they actually depend on, not by layer, and run the independent ones at the same time.
 
-Use this once the plan is settled. Breaking down a plan the user has not agreed to produces phases for the wrong work.
+Use this once the plan is settled. Breaking down a plan the user has not agreed to produces phases for the wrong work. Each phase Acceptance is the review gate; stop if the plan is unsettled.
 
 ## Glossary
 

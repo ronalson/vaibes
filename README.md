@@ -10,6 +10,34 @@ npx skills@latest add ronalson/vaibes
 
 > See https://github.com/vercel-labs/skills for more options.
 
+### Claude Code agents and the `scout` skill
+
+`npx skills` installs only folders under `skills/`. The Claude Code pieces that `delegate` uses live in `claude/` and need a manual step:
+
+| File | What it is |
+| --- | --- |
+| `claude/agents/reviewer.md` | Read-only reviewer agent, `effort: high`, no model pin |
+| `claude/agents/advisor.md` | Read-only advisor agent, `model: opus`, `effort: xhigh` |
+| `claude/skills/scout/SKILL.md` | Optional. Forks the built-in Explore agent on Haiku at medium effort |
+
+Link them from a local clone so `git pull` keeps them current:
+
+```bash
+VAIBES=/path/to/vaibes   # your local clone of ronalson/vaibes
+mkdir -p ~/.claude/agents ~/.claude/skills
+ln -s "$VAIBES/claude/agents/reviewer.md" ~/.claude/agents/reviewer.md
+ln -s "$VAIBES/claude/agents/advisor.md"  ~/.claude/agents/advisor.md
+ln -s "$VAIBES/claude/skills/scout"       ~/.claude/skills/scout   # optional
+```
+
+Notes:
+
+- Restart Claude Code if `~/.claude/agents/` did not exist when the session started. After that, agent edits reload without a restart.
+- A project's `.claude/agents/reviewer.md` or `advisor.md` takes priority over these user-level files.
+- They are Claude Code only. Codex and other harnesses never see `claude/`. `delegate` there pastes the contracts from `skills/delegate/references/` instead, and Codex uses `ask-astra` as the advisor.
+- `haiku` and `opus` resolve to older models on Bedrock, Google Cloud, and Claude Platform on AWS. On those providers, pin full IDs such as `claude-haiku-5-5`.
+- If you still have the `agent@ronalson` plugin from cc-subagents, its agents are `agent:reviewer` and so on. They don't clash with these, but uninstall the plugin once you've switched.
+
 ## Skills
 
 | Skill | Use For | Not For |
