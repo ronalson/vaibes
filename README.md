@@ -18,6 +18,7 @@ npx skills@latest add ronalson/vaibes
 | [`bro`](./skills/bro/SKILL.md) | Restating the previous message in plain, concise language. | Providing new analysis, instructions, or technical detail. |
 | [`breakdown`](./skills/breakdown/SKILL.md) | Splitting a settled plan into vertical, reviewable phases with waves and review gates. | Breaking down a plan the user has not agreed to, or horizontal layering. |
 | [`codebase-design`](./skills/codebase-design/SKILL.md) | Designing deep modules, improving interfaces, finding seams, and making code easier to test or navigate. | General implementation work that does not involve module or interface design. |
+| [`create-verification-skill`](./skills/create-verification-skill/SKILL.md) | Generating a project-local `verify-<app>` skill in `.claude/skills/` that launches the real app, drives features the way a user does, and captures evidence. | Unit tests, CI setup, or repos that already have a working verify skill. |
 | [`deslop`](./skills/deslop/SKILL.md) | Reviewing a branch diff against a requested or discovered base to remove AI-generated code slop while preserving behavior. | Broad refactors, intentional behavior changes, or solving unclear bugs. |
 | [`delegate`](./skills/delegate/SKILL.md) | Orchestrating scout/worker/reviewer/advisor with self-contained packets instead of implementing on the main thread. | Doing the implementation yourself, or delegating without a settled plan. |
 | [`file-pr`](./skills/file-pr/SKILL.md) | Opening a pull request or updating an existing one within the request, with a clear title and concise body. | Making commits, pushes, or implementation changes. |
@@ -47,4 +48,5 @@ The skills below began as upstream work and are now locally maintained adaptatio
 | `bro` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/bro/SKILL.md) | `bro` | `7314f72` |
 | `unslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md) | `unslop` | `7314f72` |
 | `technical-writing` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) | `technical-writing` | `7314f72` |
+| `create-verification-skill` | [cursor plugins](https://github.com/cursor/plugins/tree/main/pstack/skills/create-verification-skill) | `create-verification-skill` | `ccb5507` |
 | `deslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md) | `deslop` | `7314f72` |
