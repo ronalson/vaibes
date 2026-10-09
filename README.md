@@ -24,6 +24,7 @@ npx skills@latest add ronalson/vaibes
 | [`grill-me`](./skills/grill-me/SKILL.md) | Relentlessly stress-testing a plan, decision, or idea through structured questions. | Implementation or lightweight brainstorming that does not need a decision audit. |
 | [`handoff`](./skills/handoff/SKILL.md) | Compacting the current conversation into a redacted handoff document in `context/handoff/` for another agent to pick up. | Permanent project documentation, PRDs, ADRs, or issue breakdowns. |
 | [`html-doc`](./skills/html-doc/SKILL.md) | Creating a single-file HTML document for specs, findings, reports, comparisons, and visualizations. Its CDN styling requires network access. | Plain-text answers or documents that must use another file format. |
+| [`maintain-verification-skill`](./skills/maintain-verification-skill/SKILL.md) | Auditing an existing `verify-<app>` skill and its feature map against the source and a live session, then fixing proven drift. | Creating a verify skill from scratch or changing app behavior. |
 | [`prototype`](./skills/prototype/SKILL.md) | Building a throwaway prototype to explore a state model, business logic question, or UI direction before committing to it. | Production implementation, polished UI delivery, persistent data flows, or long-lived experiments. |
 | [`show-me`](./skills/show-me/SKILL.md) | Explaining the current topic with concise diagrams, code-shape sketches, and focused HTML artifacts. | Long prose lessons or visuals that do not answer the current question. |
 | [`teach-codebase`](./skills/teach-codebase/SKILL.md) | Explaining a codebase, subsystem, runtime path, or symbol so someone can change it safely. | Implementing changes or giving ungrounded architectural advice. |
@@ -48,3 +49,4 @@ The skills below began as upstream work and are now locally maintained adaptatio
 | `unslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md) | `unslop` | `7314f72` |
 | `technical-writing` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md) | `technical-writing` | `7314f72` |
 | `deslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md) | `deslop` | `7314f72` |
+| `maintain-verification-skill` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/maintain-verification-skill/SKILL.md) | `maintain-verification-skill` | `ccb5507` |
