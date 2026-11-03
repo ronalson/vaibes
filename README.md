@@ -31,7 +31,7 @@ npx skills@latest add ronalson/vaibes
 | [`tdd`](./skills/tdd/SKILL.md) | Building features or fixing bugs with a red-green-refactor loop and behavior-focused tests. | Bulk test generation, implementation-detail tests, or changes where tests are intentionally out of scope. |
 | [`teach-codebase`](./skills/teach-codebase/SKILL.md) | Explaining a codebase, subsystem, runtime path, or symbol so someone can change it safely. | Implementing changes or giving ungrounded architectural advice. |
 | [`technical-writing`](./skills/technical-writing/SKILL.md) | Writing or reviewing clear technical docs, RFCs, READMEs, PR descriptions, and commit messages. | Product UI copy or documentation outside the project's real terminology and behavior. |
-| [`type-spec`](./skills/type-spec/SKILL.md) | Step 1 of spec → breakdown → delegate → review when the design needs it: a typed call-stack architecture handoff with typed contracts and execution flows. Design only. | Smaller specs (use `handoff`), implementing the design, or inventing requirements without enough context. |
+| [`type-spec`](./skills/type-spec/SKILL.md) | Step 1 of spec → breakdown → delegate → review when the design needs it: a typed call-stack architecture spec with typed contracts and execution flows. Design only. | Smaller specs (use `handoff`), implementing the design, or inventing requirements without enough context. |
 | [`unslop`](./skills/unslop/SKILL.md) | Editing writing to remove AI tells and give it a specific, human voice. | Changing the underlying meaning, facts, or intended tone. |
 
 ## Attribution
