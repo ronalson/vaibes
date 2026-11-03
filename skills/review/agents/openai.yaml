@@ -1,0 +1,5 @@
+interface:
+  display_name: "Review"
+  short_description: "Review a diff with a second model and judge each finding"
+policy:
+  allow_implicit_invocation: false
