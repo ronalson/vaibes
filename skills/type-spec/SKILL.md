@@ -10,7 +10,7 @@ A tech spec is a **typed call-stack architecture handoff**: code-shaped contract
 
 This skill is design-only. Do not implement. Always save the spec to `context/specs/YYYY-MM-DD-topic.md` from the repository root, using today's date and a short kebab-case topic. Create the directory when needed. Never overwrite an existing file; add a numeric suffix instead (`-2`, `-3`).
 
-Every spec needs a **Validation** section, defined once in the `quick-spec` skill at [../quick-spec/references/validation.md](../quick-spec/references/validation.md). Read that file before writing Validation. This skill needs `quick-spec` installed alongside it.
+Every spec needs a **Validation** section, defined once in the `handoff` skill at [../handoff/references/validation.md](../handoff/references/validation.md). Read that file before writing Validation. This skill needs `handoff` installed alongside it.
 
 ## Branch selection
 
@@ -151,7 +151,7 @@ Cover proportionately, based on meaningful behavior and likely failures:
 
 ### 8. Write the Validation section
 
-Write `## Validation` as [../quick-spec/references/validation.md](../quick-spec/references/validation.md) defines it: feature-map IDs from the repo's `verify-<app>` skill, commands from the repo, at least one fail-first check (usually the first Red test from step 7), review risks, and manual checks. If the repo has no `verify-<app>` skill, say so in the spec and tell the user that `/create-verification-skill` can add one.
+Write `## Validation` as [../handoff/references/validation.md](../handoff/references/validation.md) defines it: feature-map IDs from the repo's `verify-<app>` skill, commands from the repo, at least one fail-first check (usually the first Red test from step 7), review risks, and manual checks. If the repo has no `verify-<app>` skill, say so in the spec and tell the user that `/create-verification-skill` can add one.
 
 ### 9. Produce the spec
 
@@ -188,4 +188,4 @@ Start from [templates/type-spec.md](templates/type-spec.md) when a full structur
 
 Finish with a design-only handoff that uses local vocabulary, grounds requirements in local precedent, evidence, or open questions, preserves agreed decisions, and gives unresolved material choices enough evidence for a recommendation. Include the contracts, call stacks, file mapping, and proportionate test plan needed for another engineer to implement the change safely.
 
-State **Accept when** (what makes the design ready to implement) and **Stop and ask if** (open questions that block implementation). The design is not ready, and must not go to `breakdown`, until its Validation section passes every item under "Complete or incomplete" in [../quick-spec/references/validation.md](../quick-spec/references/validation.md).
+State **Accept when** (what makes the design ready to implement) and **Stop and ask if** (open questions that block implementation). The design is not ready, and must not go to `breakdown`, until its Validation section passes every item under "Complete or incomplete" in [../handoff/references/validation.md](../handoff/references/validation.md).
