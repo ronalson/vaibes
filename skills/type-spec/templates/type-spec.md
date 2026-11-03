@@ -50,4 +50,16 @@
 
 ## RGR TDD Test Plan
 
+## Validation
+
+### Feature map
+
+### Commands
+
+### Fail-first
+
+### Review risks
+
+### Manual checks
+
 ## Risks and Open Questions

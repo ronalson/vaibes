@@ -8,7 +8,9 @@ disable-model-invocation: true
 
 A tech spec is a **typed call-stack architecture handoff**: code-shaped contracts plus execution flows. Prefer TypeScript pseudocode over prose wherever precision matters.
 
-This skill is design-only. Do not implement. Save a file only when the user asks for a file; otherwise return the spec inline.
+This skill is design-only. Do not implement. Always save the spec to `context/specs/YYYY-MM-DD-topic.md` from the repository root, using today's date and a short kebab-case topic. Create the directory when needed. Never overwrite an existing file; add a numeric suffix instead (`-2`, `-3`).
+
+Every spec needs a **Validation** section, defined once in the `handoff` skill at [../handoff/references/validation.md](../handoff/references/validation.md). Read that file before writing Validation. This skill needs `handoff` installed alongside it.
 
 ## Branch selection
 
@@ -147,9 +149,13 @@ Cover proportionately, based on meaningful behavior and likely failures:
 - observability and safe summaries where relevant;
 - end-to-end flows for high-consequence behavior.
 
-### 8. Produce the spec
+### 8. Write the Validation section
 
-Return the spec inline unless the user requested a file path. If a file was requested, save it there.
+Write `## Validation` as [../handoff/references/validation.md](../handoff/references/validation.md) defines it: feature-map IDs from the repo's `verify-<app>` skill, commands from the repo, at least one fail-first check (usually the first Red test from step 7), review risks, and manual checks. If the repo has no `verify-<app>` skill, say so in the spec and tell the user that `/create-verification-skill` can add one.
+
+### 9. Produce the spec
+
+Save the spec as described at the top of this skill, and give the user its path.
 
 Do not implement and do not ask to implement by default.
 
@@ -165,7 +171,7 @@ Do not implement and do not ask to implement by default.
 
 ## Spec template
 
-Start from [templates/type-spec.md](templates/type-spec.md) when a full structure helps. Omit sections that do not apply, but retain the contracts, call stacks, and tests needed to make the design safe to implement.
+Start from [templates/type-spec.md](templates/type-spec.md) when a full structure helps. Omit sections that do not apply, but retain the contracts, call stacks, and tests needed to make the design safe to implement. Never omit Validation.
 
 ## Writing rules
 
@@ -182,4 +188,4 @@ Start from [templates/type-spec.md](templates/type-spec.md) when a full structur
 
 Finish with a design-only handoff that uses local vocabulary, grounds requirements in local precedent, evidence, or open questions, preserves agreed decisions, and gives unresolved material choices enough evidence for a recommendation. Include the contracts, call stacks, file mapping, and proportionate test plan needed for another engineer to implement the change safely.
 
-State **Accept when** (what makes the design ready to implement) and **Stop and ask if** (open questions that block implementation).
+State **Accept when** (what makes the design ready to implement) and **Stop and ask if** (open questions that block implementation). The design is not ready, and must not go to `breakdown`, until its Validation section passes every item under "Complete or incomplete" in [../handoff/references/validation.md](../handoff/references/validation.md).
