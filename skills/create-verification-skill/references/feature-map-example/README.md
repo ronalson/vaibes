@@ -26,13 +26,14 @@ This directory is the maintained source for verifying the user-facing behavior o
 - UI proof includes an ARIA snapshot and a screenshot with the app identity visible.
 - CLI proof includes the command, stdout, stderr, and exit code.
 - Mutation proof includes a read-only second view of the stored value.
+- Check stored data after every journey. Only a feature whose `Writes:` line names that data may change it.
 - Record the feature ID and entry point used with every artifact.
 - Report an unreachable path with the attempted command and the unmet precondition.
 - Do not report a skipped entry point as verified through a different path.
 
 ## Feature entry contract
 
-Each feature file starts with an H1 title and one paragraph describing the user-visible behavior. It then uses exactly four H2 sections in this order.
+Each feature file starts with an H1 title, one paragraph describing the user-visible behavior, and a `Writes:` line naming the stored state the feature changes, or `Writes: nothing`. It then uses exactly four H2 sections in this order.
 
 1. `Sub-features` lists short IDs with one line for each behavior.
 2. `How to get to it (user POV)` lists every user entry point.

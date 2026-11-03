@@ -2,6 +2,8 @@
 
 Search lets a user find notes by title or body text, inspect a matching note, and distinguish no matches from an unavailable search.
 
+Writes: nothing.
+
 ## Sub-features
 
 - `search-open` opens search from each supported browser entry point.
