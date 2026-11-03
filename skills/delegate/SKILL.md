@@ -24,7 +24,7 @@ Stop and point to the right skill when:
 Stop and report if any required check fails. Commands are in [references/launch.md](references/launch.md#preflight).
 
 1. `HERDR_ENV=1`. Outside herdr there is no pane to start agents in.
-2. The `worker` and `scout` agent files exist. `grok`, `pi`, and `agent-role` are needed only for a Grok or Pi scout; report the ones missing and stop only if the run needs them.
+2. The `worker` and `scout` agent files exist. `agent-role` plus `grok` or `pi` are needed only for a Grok or Pi scout, and Pi is not installed on every machine; report the ones missing and stop only if the run needs them.
 3. The repo has a working `verify-<app>` skill under `.claude/skills/`. If it is missing or broken, stop and point to `/create-verification-skill` or `/maintain-verification-skill`.
 4. Create the run folder `<repo>/context/runs/<date>-<topic>/` and an empty `worktrees.txt`.
 5. Create or reuse the `agents` tab in the current workspace. You stay alone in tab 1.
@@ -38,7 +38,7 @@ Read [references/launch.md](references/launch.md) before starting the first agen
 1. **Integration worktree.** Create `<repo>.worktrees/<topic>-run` on branch `<topic>/run` from the current HEAD. You merge here, never by switching branches in the main checkout, which other sessions use.
 2. **Per phase in the wave.** Create its worktree on `<topic>/<phase-short-name>` from `<topic>/run`, record it in `worktrees.txt`, write its packet from [references/worker-packet.md](references/worker-packet.md), start `worker` in the workspace's root pane, and prompt: "Read the packet at `<path>` and do what it says."
 3. **Wait** for every worker in the wave, in the order in [launch.md](references/launch.md#wait-and-read-back). A `blocked` agent is a stop: read the pane, then report.
-4. **Read each result file** before acting on it. Check the claims that matter against the branch: the commit exists, `git diff --name-only <topic>/run...<topic>/<phase>` stays inside Owns, and the gate's evidence is there. Say plainly when a result is wrong or thin.
+4. **Read each result file** before acting on it. Start with its `**Status:**` line (`done`, `blocked`, or `failed`), then check the claims that matter against the branch: the commit exists, `git diff --name-only <topic>/run...<topic>/<phase>` stays inside Owns, and the gate's evidence is there. Say plainly when a result is wrong or thin.
 5. **Gate.** A phase passes when every Gate item that is not `None` has evidence: command output and exit codes for Commands, the fail-first check failing before and passing after when the gate lists one, and `verify-<app>` artifacts when the gate lists Feature map IDs. No evidence means not done. On a failure, send the same worker a new packet that quotes what failed. A second failure is a stop.
 6. **Merge** each passing phase branch into `<topic>/run` in the integration worktree. Resolve conflicts yourself when you understand both sides; stop and report when you are not sure. After the wave merges, run the gate Commands that cover more than one phase there, as in [worktrees.md](references/worktrees.md#merging).
 7. **Remove** each merged phase's worktree and mark it removed in `worktrees.txt`, as in [worktrees.md](references/worktrees.md#removing-a-worktree).

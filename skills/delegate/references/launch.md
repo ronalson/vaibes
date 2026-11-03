@@ -29,9 +29,9 @@ More panes in that tab come from `herdr pane split --pane <id> --direction right
 | Role | Where | Command | Defaults |
 |---|---|---|---|
 | `worker` | Root pane of its `herdr worktree create` workspace | `claude --agent worker --model <m> --effort <e> --permission-mode auto --strict-mcp-config --add-dir <run folder> --add-dir <repo>/context/specs` | `opus` + `medium`; `sonnet` + `low` for simple phases |
-| `scout` (Claude) | Pane in the `agents` tab | `claude --agent scout --effort medium --strict-mcp-config` | Haiku 5.5 from the agent file |
-| `scout` (Pi) | Pane in the `agents` tab | `agent-role scout --via pi --session-dir <run folder>/scout-<name>` | `openrouter/z-ai/glm-5.3-flash` |
-| `scout` (Grok) | Pane in the `agents` tab | `agent-role scout --via grok` | From the `agent-role` config |
+| `scout` (Claude, default) | Pane in the `agents` tab | `claude --agent scout --effort medium --strict-mcp-config`, the same command `agent-role scout` runs | Haiku 5.5 from the agent file |
+| `scout` (Pi, only where `pi` is installed) | Pane in the `agents` tab | `agent-role scout --via pi --session-dir <run folder>/scout-<name>` | `openrouter/z-ai/glm-5.3-flash` |
+| `scout` (Grok, untested as scout) | Pane in the `agents` tab | `agent-role scout --via grok` | `grok-4.7`, effort `medium` |
 
 Why the flags: `effort` in an agent file does not apply under `--agent`, so pass `--effort`. Without `--strict-mcp-config` a worker sees MCP tools outside its tool list. Workers need `--add-dir <run folder>` to write the result file and `--add-dir <repo>/context/specs` to read the spec by absolute path.
 
@@ -50,7 +50,7 @@ If `agent start` still returns `agent_pane_busy`, wait a moment and retry once b
 
 ## Start and prompt
 
-Claude roles start under herdr directly:
+Claude roles start under herdr directly. Use this for the Claude scout instead of `agent-role scout`: `agent start --kind claude` waits until the agent is ready, which a `pane run` start does not.
 
 ```bash
 herdr agent start <name> --kind claude --pane <pane> -- <claude args from the table>
@@ -102,6 +102,6 @@ Read results per program:
     <run folder>/scout-<name>/*.jsonl
   ```
 
-- **Grok:** `grok export <session-id> <file>`; the output file must not exist yet. The session ID is in `herdr agent get <name>` under `agent_session.value`, and `agent-role` also prints `agent-role: grok session <id>` to stderr. Pane text is unreliable for Grok and Pi.
+- **Grok:** `grok export <session-id> <file>`; the output file must not exist yet. `agent-role` prints `agent-role: grok session <id>` to stderr (it sets the ID with `--session-id`); `herdr agent get <name>` shows the same ID under `agent_session.value`. Pane text is unreliable for Grok and Pi.
 
 Close a scout's pane with `herdr pane close <pane>` once its answer is in the run folder. Close only panes this run created.
