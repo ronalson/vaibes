@@ -9,6 +9,14 @@ Turn a plan into phases. A phase is a block of implementation that lands working
 
 Use this once the plan is settled. Breaking down a plan the user has not agreed to produces phases for the wrong work.
 
+## Before you start
+
+Breakdown works on a spec in `context/specs/`, written with `quick-spec` or `type-spec`. When no spec exists, write one with either skill first.
+
+Read the spec's `## Validation` section and check it against "Complete or incomplete" in [../quick-spec/references/validation.md](../quick-spec/references/validation.md), the shared definition in the `quick-spec` skill. This skill needs `quick-spec` installed alongside it.
+
+If Validation is missing or any item fails, stop. Do not write phases. Tell the user which item numbers failed and what is missing, for example: "Validation item 3 fails: `pnpm test` does not name the file it came from." Fix the spec, or ask the user for what only they know, then check again.
+
 ## Glossary
 
 **Phase**: one block of implementation that lands as a reviewable unit. Sized so a reviewer can hold all of it at once.
@@ -23,7 +31,7 @@ Use this once the plan is settled. Breaking down a plan the user has not agreed 
 
 **Contract phase**: a small first phase that lands only the interface at a seam — types, signatures, a stub that compiles — so both sides can then proceed in parallel. Use it when two phases would otherwise queue behind each other.
 
-**Review gate**: the acceptance criteria and checks that decide whether a phase is done. A phase without one is not reviewable.
+**Review gate**: the acceptance criteria and the spec's Validation items that decide whether a phase is done. A phase without one is not reviewable.
 
 ## Tests for a phase
 
@@ -39,7 +47,9 @@ Apply these to each candidate phase. A phase that fails one is usually two phase
 Two phases run in parallel only when both hold:
 
 - **No edge between them.** Neither needs an interface, type, schema, or migration the other has not landed yet.
-- **Disjoint files.** Two agents editing the same file conflict, and reconciling that costs more than running them in sequence. Check the file lists, not the topics.
+- **Disjoint files.** Two agents editing the same file conflict, and reconciling that costs more than running them in sequence. Check the `Owns:` lists, not the topics.
+
+Each parallel phase runs in its own worktree and merges back afterward, so its `Owns:` list must name every file it creates or edits. A file missing from the list is a merge conflict nobody planned for.
 
 When two phases want the same seam, land a contract phase first and fan out after it. When they want the same file, sequence them.
 
@@ -47,9 +57,9 @@ Keep fan-out to what the work needs. Three agents on three genuinely independent
 
 ## Output
 
-Append a `## Phases` section to the spec at `context/specs/YYYY-MM-DD-topic.md`. When no spec exists, settle the plan with the user first.
+Append a `## Phases` section to the spec, after `## Validation`. `delegate` reads the phases from there, so keep the field names and order below exactly, with one phase per H3.
 
-Open with the wave plan, then the phases. Each phase includes: Depends on, Agent, Files, Lands, Acceptance, Checks.
+Open with the wave plan, then the phases. Each phase includes: Wave, Depends on, Agent, Owns, Lands, Acceptance, Gate.
 
 ```markdown
 ## Phases
@@ -58,20 +68,36 @@ Wave 1: phase 1
 Wave 2: phases 2, 3 in parallel
 Wave 3: phase 4
 
-### Phase 1 — <name>
-- Depends on: nothing
+### Phase 2 — <short-name>
+- Wave: 2
+- Depends on: phase 1
 - Agent: worker
-- Files: exact paths
+- Owns: `src/cart/add.ts`, `src/cart/add.test.ts`
 - Lands: the behavior that is observable once this phase is in
 - Acceptance: testable conditions, not a restatement of the work
-- Checks: the specific commands, from the repository's own tooling
+- Gate:
+  - Feature map: `cart.md` → `cart-add-item`
+  - Commands: `pnpm test` (from `package.json`)
+  - Fail-first: `add.test.ts` "adds a second item" fails before the change because quantities overwrite
+  - Review risks: shared cart total calculation
+  - Manual checks: None
 ```
+
+Field rules:
+
+- **Wave.** The wave number from the plan. Phases that share a wave run in parallel; a wave with one phase runs alone.
+- **Depends on.** Phase numbers, or `nothing`.
+- **Agent.** Always `worker`.
+- **Owns.** Every file the phase creates or edits, as exact backticked paths. Phases in the same wave must not share a path.
+- **Gate.** Copy items from the spec's Validation section; do not invent checks. Use the five subsection names as labels, list the items from each that prove this phase, and write `None` where no item applies. Every gate needs at least one Commands entry or Feature map ID. If a phase needs a check the spec lacks, add it to Validation first and recheck completeness.
 
 Give every phase a `Lands:` line stating observable behavior. If you cannot write one, the phase is a layer and needs reslicing.
 
-Number phases in dependency order. Put the review gate in the phase itself so a reviewer never has to reconstruct it.
+Number phases in dependency order. Keep phase names short, since `delegate` uses them to name branches. Put the review gate in the phase itself so a reviewer never has to reconstruct it.
 
-Hand the user the spec path when the breakdown is written. Execute with the `delegate` skill, dispatching one wave at a time and reading each phase's report before starting the next.
+Every Validation item belongs to at least one gate. A fail-first check or manual check that no phase claims is never run.
+
+Hand the user the spec path when the breakdown is written. Execute with the `delegate` skill.
 
 ## Rejected framings
 
