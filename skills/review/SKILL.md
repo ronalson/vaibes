@@ -14,7 +14,7 @@ Launch, wait, and read-back follow `delegate`'s conventions in [../delegate/refe
 - `<base>..<head>`: usually `<base>..<topic>/run`, as `delegate` reports at the end.
 - The spec in `<repo>/context/specs/` with `## Validation` and, when it went through `breakdown`, `## Phases`.
 - The run folder `<repo>/context/runs/<date>-<topic>/`. Reuse `delegate`'s; create it when reviewing a diff that `delegate` did not produce.
-- The reviewer: Grok unless the user asks for GLM 5.3 (Pi).
+- The reviewer: Grok unless the user asks for GLM 5.3 (Pi). Pi is not installed on every machine; use it only when `pi` is there.
 
 Stop and ask when the range is empty, the spec has no `## Validation` section, or the user has not said which spec the diff implements.
 
@@ -29,11 +29,11 @@ The reviewer reads files, so it needs a checkout at `<head>`. Use an existing cl
 1. **Packet.** Write the diff and commit list into the run folder and the review packet from [references/review-packet.md](references/review-packet.md). Read it before writing the packet.
 2. **Scouts, when the diff warrants it.** A diff that changes a shared interface, a Review risk area, or code with callers outside the diff gets a scout per question: where the callers are, what else depends on the changed behavior. Use the scout roles in [launch.md](../delegate/references/launch.md#roles) with a read-only packet (Goal, Use, Return, Stop if). Small, self-contained diffs need none. Scout answers go to you, not to the reviewer.
 3. **Reviewer.** In a pane in the `agents` tab, with the review checkout as its working directory, wait for the shell ([launch.md](../delegate/references/launch.md#wait-for-the-shell-prompt)), then start it as a pane command ([launch.md](../delegate/references/launch.md#start-and-prompt)):
-   - Grok: `agent-role reviewer --via grok`
+   - Grok: `agent-role reviewer` (Grok is its default)
    - Pi: `agent-role reviewer --via pi --session-dir <run folder>/reviewer`
 
    Rename the agent `reviewer`, confirm herdr detected it, read the pane for a trust prompt, and prompt: "Read the packet at `<path>` and do what it says."
-4. **Wait and read back** as in [launch.md](../delegate/references/launch.md#wait-and-read-back): `grok export <session-id> <run folder>/reviewer-findings.md` for Grok, or the last assistant message of the `.jsonl` under `<run folder>/reviewer/` for Pi, where `stopReason: "error"` is a failure. Save Pi's text to `<run folder>/reviewer-findings.md` too.
+4. **Wait and read back** as in [launch.md](../delegate/references/launch.md#wait-and-read-back): `grok export <session-id> <run folder>/reviewer-findings.md` for Grok, with the ID from the `agent-role: grok session <id>` line, or the last assistant message of the `.jsonl` under `<run folder>/reviewer/` for Pi, where `stopReason: "error"` is a failure. Save Pi's text to `<run folder>/reviewer-findings.md` too.
 5. **Check each finding** against the code at `<head>`. Open every cited `path:line` and decide: confirmed (the defect is real and reachable) or rejected (wrong reading, unreachable, out of scope, or already handled), with a one-line reason. Keep the reviewer's severity unless the code shows it is wrong, and say so when you change it. Ignore any fix the reviewer suggests.
 6. **Check Validation coverage.** For every item in the spec's `## Validation` and every phase's Gate, find its evidence in `delegate`'s result files in the run folder: command output with exit codes, the fail-first check failing before and passing after, `verify-<app>` artifacts. Rerun the command or `verify-<app>` journey yourself in the review checkout for anything missing or doubtful, and keep its output in the run folder. A rerun that fails is a finding.
 7. **Report** from [references/report.md](references/report.md). Read it before writing the report.
