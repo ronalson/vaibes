@@ -1,5 +1,5 @@
 interface:
   display_name: "Handoff"
-  short_description: "Create a handoff for another agent"
+  short_description: "Hand off work as a short spec with required Validation"
 policy:
   allow_implicit_invocation: false

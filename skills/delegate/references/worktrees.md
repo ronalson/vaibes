@@ -50,17 +50,23 @@ git -C <worktree> status --porcelain     # must be empty
 herdr worktree remove --workspace <id>
 ```
 
-This removes the worktree, its folder, and its workspace, but keeps the branch and the `<repo>.worktrees/` folder.
+This removes the worktree, its folder, and its workspace, but keeps the branch and the `<repo>.worktrees/` folder. Then prefix its line in `worktrees.txt` with `# removed: ` so the sweep skips it.
 
 ## Cleanup sweep
 
-At the end of the run, for each entry in `worktrees.txt`:
+At the end of the run, for each line in `worktrees.txt` that does not start with `# removed: `:
 
 1. Skip and report any worktree with uncommitted changes.
-2. Remove the worktree: `herdr worktree remove --workspace <id>`, or `git -C <repo> worktree remove <path>` for a `-` entry.
-3. Delete the phase branch with `git -C <repo> branch -d <topic>/<phase>`. `-d` refuses an unmerged branch: report it and ask before deleting, since the work may be wanted.
+2. Remove the worktree: `herdr worktree remove --workspace <id>`, or `git -C <repo> worktree remove <path>` for a `-` entry. Mark the line `# removed: `.
 
-Keep `<topic>/run`; it holds the result for review. Then:
+Then delete the phase branches. They were merged into `<topic>/run`, not into the main checkout's branch, so `git branch -d` would refuse them all. Check the merge against `<topic>/run` instead, and use `-D` only on branches that check lists:
+
+```bash
+git -C <repo> branch --merged <topic>/run --list '<topic>/*'
+git -C <repo> branch -D <topic>/<phase>     # each listed branch except <topic>/run
+```
+
+Keep `<topic>/run`; it holds the result for review. Report any `<topic>/*` branch not in the merged list and ask before deleting it, since the work may be wanted. Then:
 
 ```bash
 rmdir <repo>.worktrees          # only when empty

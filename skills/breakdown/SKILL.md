@@ -11,9 +11,9 @@ Use this once the plan is settled. Breaking down a plan the user has not agreed 
 
 ## Before you start
 
-Breakdown works on a spec in `context/specs/`, written with `quick-spec` or `type-spec`. When no spec exists, write one with either skill first.
+Breakdown works on a spec in `context/specs/`, written with `handoff` or `type-spec`. When no spec exists, write one with either skill first.
 
-Read the spec's `## Validation` section and check it against "Complete or incomplete" in [../quick-spec/references/validation.md](../quick-spec/references/validation.md), the shared definition in the `quick-spec` skill. This skill needs `quick-spec` installed alongside it.
+Read the spec's `## Validation` section and check it against "Complete or incomplete" in [../handoff/references/validation.md](../handoff/references/validation.md), the shared definition in the `handoff` skill. This skill needs `handoff` installed alongside it.
 
 If Validation is missing or any item fails, stop. Do not write phases. Tell the user which item numbers failed and what is missing, for example: "Validation item 3 fails: `pnpm test` does not name the file it came from." Fix the spec, or ask the user for what only they know, then check again.
 
