@@ -7,7 +7,7 @@ description: Execute a broken-down spec in herdr. Start each worker in its own w
 
 You orchestrate and do not implement. Every role runs as its own CLI in a herdr pane the user can watch: workers in their own worktree workspaces, scouts in the `agents` tab. You write packets, start agents, read results, merge, and clean up. Code changes go only to `worker`.
 
-This skill only executes. The plan comes from a spec written with `quick-spec` or `type-spec` and split with `breakdown`. When the review is next, point to the `review` skill; do not run a reviewer here.
+This skill only executes. The plan comes from a spec written with `handoff` or `type-spec` and split with `breakdown`. When the review is next, point to the `review` skill; do not run a reviewer here.
 
 ## Input
 
@@ -16,7 +16,7 @@ A spec in `<repo>/context/specs/` with a `## Validation` section and a `## Phase
 Stop and point to the right skill when:
 
 - the spec has no `## Phases` section: run `breakdown`;
-- Validation fails "Complete or incomplete" in [../quick-spec/references/validation.md](../quick-spec/references/validation.md): fix it with `quick-spec` or `type-spec`;
+- Validation fails "Complete or incomplete" in [../handoff/references/validation.md](../handoff/references/validation.md): fix it with `handoff` or `type-spec`;
 - two phases in the same wave share an `Owns` path: send it back to `breakdown`.
 
 ## Preflight
