@@ -19,7 +19,7 @@ The `worker` agent file holds the result-file template, so the packet names only
 
   <the whole `### Phase N` block, including Acceptance and Gate>
 
-- `verify-<app>`: `.claude/skills/verify-<app>/`. Run the Feature map journeys listed in the Gate and keep its artifacts.
+- `verify-<app>`: `.claude/skills/verify-<app>/`. If the Gate lists Feature map IDs, run those journeys and keep the artifacts.
 - <Anything earlier waves changed that this phase relies on, with paths and commit SHAs.>
 
 ## Own
@@ -34,12 +34,12 @@ The `worker` agent file holds the result-file template, so the packet names only
 
 ## Return
 
-Write `<run folder>/phase-<N>-<short-name>-result.md`. For every Gate item, give its evidence: commands with output and exit codes, the fail-first check failing before the change and passing after, and the `verify-<app>` artifact paths. No evidence means the phase is not done.
+Write `<run folder>/phase-<N>-<short-name>-result.md`. For every Gate item that is not `None`, give its evidence: Commands with output and exit codes, the fail-first check failing before the change and passing after, and `verify-<app>` artifact paths for Feature map IDs. No evidence means the phase is not done.
 
 ## Stop if
 
 - The phase needs a change outside Own.
-- A Gate command or `verify-<app>` journey cannot run, or fails for a reason outside this phase.
+- A Gate command or listed `verify-<app>` journey cannot run, or fails for a reason outside this phase.
 - The work needs a destructive action or an approval.
 ```
 
