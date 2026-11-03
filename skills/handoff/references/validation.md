@@ -1,6 +1,6 @@
 # Validation section
 
-Every spec in this workflow carries a `## Validation` section that says how the work will be proven. `quick-spec` and `type-spec` both write it from this file, and `breakdown` checks it against this file before splitting a spec.
+Every spec in this workflow carries a `## Validation` section that says how the work will be proven. `handoff` and `type-spec` both write it from this file, and `breakdown` checks it against this file before splitting a spec.
 
 ## Shape
 

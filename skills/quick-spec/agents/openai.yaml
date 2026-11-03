@@ -1,5 +1,0 @@
-interface:
-  display_name: "Quick Spec"
-  short_description: "Write a short spec with a required Validation section"
-policy:
-  allow_implicit_invocation: false

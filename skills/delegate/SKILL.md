@@ -24,7 +24,7 @@ Run agents in sequence when a later one needs an earlier one's output, which is 
 
 Work large enough that the packet would not hold it gets a spec first. Settle it with the user in conversation, then write one file to `context/specs/YYYY-MM-DD-topic.md` relative to the repository root, using today's date and a short kebab-case topic. Create the directory when needed. Never overwrite an existing spec; add a numeric suffix instead.
 
-Use the template in the `quick-spec` skill, [../quick-spec/references/spec-template.md](../quick-spec/references/spec-template.md), including its required Validation section.
+Use the template in the `handoff` skill, [../handoff/references/spec-template.md](../handoff/references/spec-template.md), including its required Validation section.
 
 Keep the spec as short as the work allows. Prefer exact paths, symbols, and commands over prose. Give the user the path and let them edit it before `worker` starts. Small, obvious work skips this step entirely.
 
