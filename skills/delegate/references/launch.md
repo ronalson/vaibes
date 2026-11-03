@@ -57,6 +57,8 @@ herdr agent start <name> --kind claude --pane <pane> -- <claude args from the ta
 herdr agent prompt <name> "Read the packet at <path> and do what it says."
 ```
 
+For several workers, repeat these lines per worker with the values written out, or use a function with positional arguments. Don't loop over a string and split it with `set -- $var`: zsh doesn't split unquoted variables, so every command gets one empty or joined argument.
+
 `agent start --kind` runs that kind's own executable, so it cannot wrap `agent-role`. Start Pi or Grok roles as a pane command, wait until herdr detects the agent in that pane, then name it. `<kind>` is `grok` or `pi`:
 
 ```bash
