@@ -2,12 +2,16 @@
 
 Read this before starting the first agent of a run. Check exact syntax with `herdr <group> <command> --help`. Never run bare `herdr`: it opens the TUI.
 
+Check each binary on its own line: with several names, `command -v` exits 1 in zsh if any is missing and 0 in bash if any is found.
+
 ## Preflight
 
 ```bash
 test "$HERDR_ENV" = 1
 ls ~/.claude/agents/worker.md ~/.claude/agents/scout.md
-command -v grok pi agent-role          # needed only for Grok or Pi scouts
+command -v agent-role                  # only for a Grok or Pi role
+command -v grok                        # only for a Grok role
+command -v pi                          # only for a Pi role
 ls <repo>/.claude/skills/verify-*/SKILL.md
 herdr tab list --workspace "$HERDR_WORKSPACE_ID"
 ```
@@ -27,6 +31,7 @@ More panes in that tab come from `herdr pane split --pane <id> --direction right
 | `worker` | Root pane of its `herdr worktree create` workspace | `claude --agent worker --model <m> --effort <e> --permission-mode auto --strict-mcp-config --add-dir <run folder> --add-dir <repo>/context/specs` | `opus` + `medium`; `sonnet` + `low` for simple phases |
 | `scout` (Claude) | Pane in the `agents` tab | `claude --agent scout --effort medium --strict-mcp-config` | Haiku 5.5 from the agent file |
 | `scout` (Pi) | Pane in the `agents` tab | `agent-role scout --via pi --session-dir <run folder>/scout-<name>` | `openrouter/z-ai/glm-5.3-flash` |
+| `scout` (Grok) | Pane in the `agents` tab | `agent-role scout --via grok` | From the `agent-role` config |
 
 Why the flags: `effort` in an agent file does not apply under `--agent`, so pass `--effort`. Without `--strict-mcp-config` a worker sees MCP tools outside its tool list. Workers need `--add-dir <run folder>` to write the result file and `--add-dir <repo>/context/specs` to read the spec by absolute path.
 
@@ -34,11 +39,11 @@ Agent names must match `[a-z][a-z0-9_-]{0,31}` and be unique among live agents. 
 
 ## Wait for the shell prompt
 
-`agent start` fails with `agent_pane_busy` until the new pane's shell is at its prompt. Prompts differ between users, so wait on a marker instead of the prompt text: queue an `echo` whose output differs from the typed command, then wait for the marker followed by another line, which is the prompt drawn after it. The shell reads the queued line once it is ready.
+`agent start` fails with `agent_pane_busy` until the new pane's shell is at its prompt. Prompts differ between users, so wait on a marker instead of the prompt text: queue an `echo` whose output differs from the typed command, then wait for that output. The shell reads the queued line once it is ready. herdr matches line by line, so use a literal `--match`; a regex spanning two lines never matches.
 
 ```bash
 herdr pane run <pane> 'echo herdr-ready-$((40+2))'
-herdr pane wait-output <pane> --source recent-unwrapped --regex 'herdr-ready-42\n.*\S' --timeout 30000
+herdr pane wait-output <pane> --source recent-unwrapped --match herdr-ready-42 --timeout 30000
 ```
 
 If `agent start` still returns `agent_pane_busy`, wait a moment and retry once before reporting.
@@ -52,28 +57,34 @@ herdr agent start <name> --kind claude --pane <pane> -- <claude args from the ta
 herdr agent prompt <name> "Read the packet at <path> and do what it says."
 ```
 
-`agent start --kind` runs that kind's own executable, so it cannot wrap `agent-role`. Start Pi or Grok roles as a pane command, then name the agent herdr detects in that pane:
+`agent start --kind` runs that kind's own executable, so it cannot wrap `agent-role`. Start Pi or Grok roles as a pane command, wait until herdr detects the agent in that pane, then name it. `<kind>` is `grok` or `pi`:
 
 ```bash
-herdr pane run <pane> "agent-role scout --via pi --session-dir <run folder>/scout-<name>"
+herdr pane run <pane> "agent-role scout --via <kind> ..."
+for i in $(seq 30); do                 # up to 30 s
+  herdr agent get <pane> | grep -q "\"agent\":\"<kind>\"" && break
+  sleep 1
+done
 herdr agent rename <pane> <name>
 herdr agent prompt <name> "Read the packet at <path> and do what it says."
 ```
 
-This `pane run` form is not yet tested end to end: confirm with `herdr agent get <pane>` that herdr detected the agent before prompting. Grok and Pi keep their own trust lists, and herdr reports Grok as `idle` while its trust prompt is open, so read the pane with `--source visible` before the first prompt.
+If the loop ends without a match, read the pane with `--source visible` and report. For Grok you can first wait for its session line: `herdr pane wait-output <pane> --source recent-unwrapped --match 'agent-role: grok session' --timeout 20000`.
+
+The Grok start is tested; the Pi start is not yet tested end to end. Grok and Pi keep their own trust lists, and herdr reports Grok as `idle` while its trust prompt is open, so read the pane with `--source visible` before the first prompt.
 
 ## Wait and read back
 
 After each prompt, wait in two steps. Waiting for completion straight away can return `idle` before the agent starts.
 
 ```bash
-herdr agent wait <name> --until working --timeout 60000
+herdr agent wait <name> --until working --until blocked --timeout 60000
 herdr agent wait <name> --until done --until idle --until blocked
 ```
 
 With several workers in a wave, wait on each in turn; a finished worker's wait returns at once.
 
-On `blocked`, read the screen and report. Never send keys to a trust or approval prompt.
+On `blocked`, or when the first wait times out, read the screen and report. Never send keys to a trust or approval prompt.
 
 ```bash
 herdr agent read <name> --source visible
