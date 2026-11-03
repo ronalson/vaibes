@@ -1,22 +1,32 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document for another agent to pick up.
-disable-model-invocation: true
+description: Hand planned work to another agent or a fresh session as a short implementation spec in context/specs/, with a required Validation section that says how the work is proven. Use when work is too large for a single packet or prompt but does not need a typed architecture spec (type-spec).
 ---
 
-Write a handoff markdown document summarising the current conversation so a fresh agent can continue the work. By default, save it in `<repo-root>/context/handoff/`, creating that directory when it does not exist. Use a descriptive, non-overwriting filename such as `YYYY-MM-DD-topic.md`; add a suffix when that name already exists.
+# Handoff
 
-Include these sections:
+Write one short spec that another agent can implement and prove without this conversation. Design only: do not implement.
 
-- **Objective** - the outcome the next agent should achieve
-- **Preserve / constraints** - what must not change and any hard limits
-- **Completed work** - what is already done
-- **Remaining work** - what is left
-- **Accept when** - how the next agent knows remaining work is done
-- **Stop and ask if** - conditions that should pause work and return to the user
-- **References** - paths or URLs only; do not duplicate content already in other artifacts (PRDs, plans, ADRs, issues, commits, diffs)
-- **Verification status** - what was last checked, and whether that check ran after the final mutation
+## Inputs
 
-Redact any sensitive information, such as API keys, passwords, or personally identifiable information.
+The settled plan from the conversation, plus what you read in the repo. If the goal or scope is still open, settle it with the user first (`grill-me` helps). Answer questions the codebase can answer by reading it.
 
-If the user passed arguments, treat them as a description of what the next session will focus on and tailor the doc accordingly.
+## Write the spec
+
+1. Start from [references/spec-template.md](references/spec-template.md). Read it before writing; keep its sections and order.
+2. Write the **Validation** section as [references/validation.md](references/validation.md) defines it. Read that file before writing Validation. Look for `.claude/skills/verify-<app>/` in the target repo for feature-map IDs, and take commands from the repo's own files. If the repo has no `verify-<app>` skill, say so in the spec and tell the user that `/create-verification-skill` can add one.
+3. Keep the spec as short as the work allows. Prefer exact paths, symbols, and commands over prose.
+4. Save to `context/specs/YYYY-MM-DD-topic.md` from the repository root, using today's date and a short kebab-case topic. Create the directory when needed. Never overwrite an existing file; add a numeric suffix instead (`-2`, `-3`).
+
+## Done means
+
+- The spec file is saved and you gave the user its path, so they can edit it before work starts.
+- Its Validation section passes every item under "Complete or incomplete" in [references/validation.md](references/validation.md).
+
+A spec whose Validation is incomplete is not done and must not go to `breakdown`. Tell the user which items fail.
+
+## Stop and ask when
+
+- The repo has no command that would prove the work. Do not invent one.
+- No check can fail before the change, so the fail-first item can't be met.
+- An open question would change the approach.
