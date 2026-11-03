@@ -79,7 +79,7 @@ Wave 3: phase 4
   - Feature map: `cart.md` → `cart-add-item`
   - Commands: `pnpm test` (from `package.json`)
   - Fail-first: `add.test.ts` "adds a second item" fails before the change because quantities overwrite
-  - Review risks: shared cart total calculation
+  - Review risks: shared cart total calculation. Caught by: `add.test.ts` "keeps the total across items"
   - Manual checks: None
 ```
 
@@ -89,7 +89,8 @@ Field rules:
 - **Depends on.** Phase numbers, or `nothing`.
 - **Agent.** Always `worker`.
 - **Owns.** Every file the phase creates or edits, as exact backticked paths. Phases in the same wave must not share a path.
-- **Gate.** Copy items from the spec's Validation section; do not invent checks. Use the five subsection names as labels, list the items from each that prove this phase, and write `None` where no item applies. Every gate needs at least one Commands entry or Feature map ID. If a phase needs a check the spec lacks, add it to Validation first and recheck completeness.
+- **Acceptance.** The spec's Acceptance criteria this phase meets, plus every test case the spec's Files section names for a file in Owns, in the spec's words. A test case named only in Files is lost if no phase lists it.
+- **Gate.** Copy items from the spec's Validation section; do not invent checks. Use the five subsection names as labels, list the items from each that prove this phase, and write `None` where no item applies. Every gate needs at least one Commands entry or Feature map ID. Each Review risk keeps the test or journey step that catches it, and the gate needs evidence that this check fails when the risk happens: break the code the way the risk describes, show the check failing, then restore the code. If a phase needs a check the spec lacks, add it to Validation first and recheck completeness.
 
 Give every phase a `Lands:` line stating observable behavior. If you cannot write one, the phase is a layer and needs reslicing.
 

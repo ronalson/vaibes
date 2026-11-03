@@ -10,7 +10,7 @@ In scope, as a short list. Out of scope, when a reader would otherwise assume it
 The chosen approach in a few sentences. Name a rejected alternative only when the choice is genuinely contested.
 
 ## Files
-Each file to change, with exact paths and line ranges where known, and one line on what changes in it.
+Each file to change, with exact paths and line ranges where known, and one line on what changes in it. Name each test case to add; `breakdown` copies them into the owning phase. When the change adds or renames something users see, include every verify-skill match from the Feature map search, or mark it `not affected`.
 
 ## Acceptance criteria
 Observable conditions that make this done. Testable statements, not restatements of the approach.
