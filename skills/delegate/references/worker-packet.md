@@ -34,7 +34,7 @@ The `worker` agent file holds the result-file template, so the packet names only
 
 ## Return
 
-Write `<run folder>/phase-<N>-<short-name>-result.md`. For every Gate item that is not `None`, give its evidence: Commands with output and exit codes, the fail-first check failing before the change and passing after, each Review risk's named check failing with the code temporarily broken as the risk describes and passing once restored, and `verify-<app>` artifact paths for Feature map IDs. No evidence means the phase is not done.
+Write `<run folder>/phase-<N>-<short-name>-result.md`. For every Gate item that is not `None`, give its evidence: Commands with output and exit codes, the fail-first check failing before the change and passing after, each Review risk's named checks failing with only what the risk describes temporarily broken (other checks left in place) and passing once restored, and `verify-<app>` artifact paths for Feature map IDs. No evidence means the phase is not done.
 
 ## Stop if
 
