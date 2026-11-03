@@ -1,5 +1,5 @@
 interface:
   display_name: "Delegate"
-  short_description: "Delegate implementation to specialized agents"
+  short_description: "Run a spec's phases as herdr workers and merge them"
 policy:
   allow_implicit_invocation: false
