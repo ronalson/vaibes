@@ -37,6 +37,16 @@ Why the flags: `effort` in an agent file does not apply under `--agent`, so pass
 
 Agent names must match `[a-z][a-z0-9_-]{0,31}` and be unique among live agents. Use `worker-<phase-short-name>` and `scout-<topic>`, shortened to fit.
 
+## Advisor
+
+For a long or hard worker phase only (a big refactor, a migration, an architecture decision, or a bug that keeps coming back), pass an advisor on that session. `--advisor opus` is the cheaper first choice; `--advisor fable` (Fable 5.2) is the stronger, more expensive one. Fable is never the main or daily model; at most it is the advisor. Add the flag to that worker's `claude` args, and leave it off for an ordinary phase.
+
+Never pass `--advisor` on a scout launch. The scout stays on Haiku at medium effort.
+
+Don't save `advisorModel` as a global or default setting. Subagents inherit the advisor, so a saved default makes every Haiku scout call it too. `--advisor` applies to that session only.
+
+Requires Claude Code v2.1.321 or later, and the Anthropic API or a Claude subscription (not Bedrock or Vertex). Each advisor call re-reads the whole conversation with no prompt cache, so use it per session for hard work, not routinely. See the [advisor docs](https://code.claude.com/docs/en/advisor).
+
 ## Wait for the shell prompt
 
 `agent start` fails with `agent_pane_busy` until the new pane's shell is at its prompt. Prompts differ between users, so wait on a marker instead of the prompt text: queue an `echo` whose output differs from the typed command, then wait for that output. The shell reads the queued line once it is ready. herdr matches line by line, so use a literal `--match`; a regex spanning two lines never matches.
