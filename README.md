@@ -35,10 +35,16 @@ npx skills@latest add ronalson/vaibes
 
 ### Usage
 
-Name the agents the machine uses. On a laptop with Claude Code, Codex, and Pi:
+Name the agents the machine uses. The default, on the personal laptop with Claude Code, Grok, and Pi:
 
 ```bash
-python3 install.py claude codex pi
+python3 install.py claude grok pi
+```
+
+On a machine that only runs Claude Code:
+
+```bash
+python3 install.py claude
 ```
 
 On a server with Claude Code and Grok:
@@ -46,6 +52,8 @@ On a server with Claude Code and Grok:
 ```bash
 python3 install.py claude grok
 ```
+
+Add `codex` to write the rules into `~/.codex/AGENTS.md` on a machine that uses Codex.
 
 Run it again after pulling to apply new rules. `~/.local/bin` must be on your `PATH` for `agent-role`.
 
@@ -61,7 +69,7 @@ Run it again after pulling to apply new rules. `~/.local/bin` must be on your `P
 | `bad markers` | The startup file has a broken rules block. |
 
 ```bash
-python3 install.py --check claude codex pi
+python3 install.py --check claude grok pi
 ```
 
 ### Managed block
