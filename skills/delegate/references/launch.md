@@ -28,24 +28,30 @@ More panes in that tab come from `herdr pane split --pane <id> --direction right
 
 | Role | Where | Command | Defaults |
 |---|---|---|---|
-| `worker` | Root pane of its `herdr worktree create` workspace | `claude --agent worker --model <m> --effort <e> --permission-mode auto --strict-mcp-config --add-dir <run folder> --add-dir <repo>/context/specs` | `opus` + `medium`; `sonnet` + `low` for simple phases |
+| `worker` | Root pane of its `herdr worktree create` workspace | `claude --agent worker --model <m> --effort <e> --permission-mode auto --strict-mcp-config --add-dir <run folder> --add-dir <repo>/context/specs` | `opus` + `high` |
 | `scout` (Claude, default) | Pane in the `agents` tab | `claude --agent scout --effort medium --strict-mcp-config`, the same command `agent-role scout` runs | Haiku 5.5 from the agent file |
 | `scout` (Pi, only where `pi` is installed) | Pane in the `agents` tab | `agent-role scout --via pi --session-dir <run folder>/scout-<name>` | `openrouter/z-ai/glm-5.3-flash` |
 | `scout` (Grok, untested as scout) | Pane in the `agents` tab | `agent-role scout --via grok` | `grok-4.7`, effort `medium` |
 
 Why the flags: `effort` in an agent file does not apply under `--agent`, so pass `--effort`. Without `--strict-mcp-config` a worker sees MCP tools outside its tool list. Workers need `--add-dir <run folder>` to write the result file and `--add-dir <repo>/context/specs` to read the spec by absolute path.
 
+The Claude scout stays on Haiku at medium effort. Use it as a high-volume sweeper: classification, routing, extraction, searching files, reading logs, summarizing, pattern-matching, or walking files to flag a smell. It never writes code. A side task that needs judgment goes to an Opus worker.
+
 Agent names must match `[a-z][a-z0-9_-]{0,31}` and be unique among live agents. Use `worker-<phase-short-name>` and `scout-<topic>`, shortened to fit.
 
 ## Advisor
 
-For a long or hard worker phase only (a big refactor, a migration, an architecture decision, or a bug that keeps coming back), pass an advisor on that session. `--advisor opus` is the cheaper first choice; `--advisor fable` (Fable 5.2) is the stronger, more expensive one. Fable is never the main or daily model; at most it is the advisor. Add the flag to that worker's `claude` args, and leave it off for an ordinary phase.
+For a long or hard worker phase only (a big refactor, a migration, an architecture decision, or a bug that keeps coming back), pass an advisor on that session. `--advisor opus` is the cheaper first choice. `--advisor fable` is for when the cost is worth it. Fable is never the daily or main model. Add the flag to that worker's `claude` args.
 
-Never pass `--advisor` on a scout launch. The scout stays on Haiku at medium effort.
+Call Fable when Opus is too same-y, too cautious, or stuck in a circle, when the work is unprovable or creative, or when a pile of work sits unmerged because the worker keeps finding more to do (a ship or audit call). Do not start a long, careful harness-building phase, or an ordinary worker phase, on Fable.
 
-Don't save `advisorModel` as a global or default setting. Subagents inherit the advisor, so a saved default makes every Haiku scout call it too. `--advisor` applies to that session only.
+`--advisor fable` is an in-session check. For a ship call on a long existing thread, switch that session to Fable briefly to audit, rather than only passing the advisor flag.
 
-Requires Claude Code v2.1.321 or later, and the Anthropic API or a Claude subscription (not Bedrock or Vertex). Each advisor call re-reads the whole conversation with no prompt cache, so use it per session for hard work, not routinely. See the [advisor docs](https://code.claude.com/docs/en/advisor).
+Never pass an advisor on a scout. Never save `advisorModel` as a default. Subagents inherit the advisor, so a saved default makes every Haiku scout call it too.
+
+Skip `low` and `max` effort, especially Fable at `max`. Prefer `high`. Use `xhigh` to audit or turn every stone, not as the default.
+
+Each advisor call re-reads the whole conversation with no prompt cache, so use it per session for hard work, not routinely. See the [advisor docs](https://code.claude.com/docs/en/advisor).
 
 ## Wait for the shell prompt
 
@@ -66,6 +72,8 @@ Claude roles start under herdr directly. Use this for the Claude scout instead o
 herdr agent start <name> --kind claude --pane <pane> -- <claude args from the table>
 herdr agent prompt <name> "Read the packet at <path> and do what it says."
 ```
+
+For a worker, the prompt is `Read the packet at <path> and do what it says. If you think this is a good idea, do it. Otherwise, suggest something else.`
 
 For several workers, repeat these lines per worker with the values written out, or use a function with positional arguments. Don't loop over a string and split it with `set -- $var`: zsh doesn't split unquoted variables, so every command gets one empty or joined argument.
 

@@ -36,7 +36,7 @@ Stop and report if any required check fails. Commands are in [references/launch.
 Read [references/launch.md](references/launch.md) before starting the first agent, and [references/worktrees.md](references/worktrees.md) before creating the first worktree.
 
 1. **Integration worktree.** Create `<repo>.worktrees/<topic>-run` on branch `<topic>/run` from the current HEAD. You merge here, never by switching branches in the main checkout, which other sessions use.
-2. **Per phase in the wave.** Create its worktree on `<topic>/<phase-short-name>` from `<topic>/run`, record it in `worktrees.txt`, write its packet from [references/worker-packet.md](references/worker-packet.md), start `worker` in the workspace's root pane, and prompt: "Read the packet at `<path>` and do what it says."
+2. **Per phase in the wave.** Create its worktree on `<topic>/<phase-short-name>` from `<topic>/run`, record it in `worktrees.txt`, write its packet from [references/worker-packet.md](references/worker-packet.md), start `worker` in the workspace's root pane, and prompt: "Read the packet at `<path>` and do what it says. If you think this is a good idea, do it. Otherwise, suggest something else."
 3. **Wait** for every worker in the wave, in the order in [launch.md](references/launch.md#wait-and-read-back). A `blocked` agent is a stop: read the pane, then report.
 4. **Read each result file** before acting on it. Start with its `**Status:**` line (`done`, `blocked`, or `failed`), then check the claims that matter against the branch: the commit exists, `git diff --name-only <topic>/run...<topic>/<phase>` stays inside Owns, and the gate's evidence is there. Say plainly when a result is wrong or thin.
 5. **Gate.** A phase passes when every Gate item that is not `None` has evidence: command output and exit codes for Commands, the fail-first check failing before and passing after when the gate lists one, each Review risk's named checks failing with only what the risk describes broken and passing once restored, and `verify-<app>` artifacts when the gate lists Feature map IDs. No evidence means not done. A named check that passes with the code broken is a gate failure, even when another test fails. On a failure, send the same worker a new packet that quotes what failed. A second failure is a stop.
@@ -44,7 +44,7 @@ Read [references/launch.md](references/launch.md) before starting the first agen
 7. **Remove** each merged phase's worktree and mark it removed in `worktrees.txt`, as in [worktrees.md](references/worktrees.md#removing-a-worktree).
 8. Start the next wave from the updated `<topic>/run` without checking in.
 
-Use the fewest agents that finish. Send a scout only when a read-only question stands between you and the next step, such as where a conflicting caller lives. Packets are self-contained: quote the evidence, never "continue the work".
+Use the fewest agents that finish. Send a scout only for a sweeper question that stands between you and the next step, such as where a conflicting caller lives. The scout's job is in [launch.md](references/launch.md#roles). Packets are self-contained: quote the evidence, never "continue the work".
 
 ## Stops
 
