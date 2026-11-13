@@ -7,6 +7,8 @@ The `worker` agent file holds the result-file template, so the packet names only
 ```markdown
 # Packet: phase <N> — <short-name>
 
+If you think this is a good idea, do it. Otherwise, suggest something else.
+
 ## Goal
 
 <The phase's Lands line, and why it matters to the spec's goal.>
@@ -49,4 +51,4 @@ When a gate fails, write `phase-<N>-<short-name>-packet-2.md` with the same fiel
 
 ## Read-only packets
 
-Scouts need only Goal, Use, Return, and Stop if. Ask one specific question, give the paths you already know, and name the return format, such as a cited list of `file:line` locations.
+Scouts need only Goal, Use, Return, and Stop if. Ask one sweeper question: classify, route, extract, search files, read logs, summarize, pattern-match, or walk files to flag a smell. Give the paths you already know, and name the return format, such as a cited list of `file:line` locations. The scout never writes code. A side task that needs judgment goes to an Opus worker.
