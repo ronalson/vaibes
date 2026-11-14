@@ -146,6 +146,11 @@ def split_block(text: str) -> Optional[Tuple[str, str, str]]:
     if len(begins) != 1 or len(ends) != 1 or ends[0] < begins[0]:
         raise BadMarkers
     b, e = begins[0], ends[0]
+    # The marker lines are replaced whole, so any other text on them would be lost.
+    for line in (lines[b], lines[e]):
+        marker = line.strip()
+        if not marker.endswith("-->") or marker.count("-->") != 1:
+            raise BadMarkers
     return "".join(lines[:b]), "".join(lines[b + 1 : e]), "".join(lines[e + 1 :])
 
 
