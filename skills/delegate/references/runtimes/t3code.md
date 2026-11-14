@@ -2,7 +2,7 @@
 
 Each worker runs as a T3 Code thread in its own T3-created worktree, through a dedicated "Claude worker" provider instance, and the user watches it in the T3 Code app. Scouts and the reviewer run [headless](headless.md), since T3 Code cannot pass `agent-role`'s read-only flags. The operations are defined in [contract.md](contract.md).
 
-Checked against T3 Code 0.1.9, whose `t3` CLI has only `thread list`, `start`, `send`, and `show`. A worker thread through the provider instance was tested on ronbox (vaibes#27). No full `delegate` run has used this page yet.
+Checked against T3 Code 0.1.9, whose `t3` CLI has only `thread list`, `start`, `send`, and `show`. A worker thread through the provider instance was tested on ronbox (vaibes#27), and Start, Wait, Read, and Remove were run once on the Mac against dry-vaibes. No full `delegate` run has used this page yet.
 
 `<t3>` below is `t3` when `command -v t3` finds it, otherwise the desktop app's launcher `~/.t3/bin/t3`.
 
@@ -47,7 +47,7 @@ The worker cannot read the run folder or the spec, which are outside its worktre
 
 - `--model` is required with `--provider`. Use the model the `worker` agent file names, unless the phase calls for another.
 - Pass the full `<topic>/<phase>` branch; T3 Code uses `--branch` as given.
-- Find the thread ID with `<t3> thread list --project <repo> --json` by its title, and record the worker in `agents.txt` with runtime `t3code`, the thread ID as the handle, and the `.t3.json` file as the log.
+- While the thread runs, find its ID with `<t3> thread list --project <repo> --json` by its title; the reply also carries it as `threadId` once the command exits. Record the worker in `agents.txt` with runtime `t3code`, the thread ID as the handle, and the `.t3.json` file as the log. Treat the ID as opaque: threads started from inside a T3 Code session get an `mcp:` prefix, and the full ID is what `show` and `send` take.
 
 A wave starts every worker this way before waiting on any.
 
@@ -61,10 +61,10 @@ Never while the thread waits for an answer (`pendingRequestCount > 0`). A busy t
 
 ## Wait
 
-Wait for the background `thread start` (or `send`) to exit, then branch on its JSON, not on the exit code alone:
+Wait for the background `thread start` (or `send`) to exit, then branch on its JSON reply (`threadId`, `runId`, `status`, `reply`, `error`), not on the exit code alone:
 
-- `pendingRequestCount > 0`, or exit 2: waiting for the user. Report it; never answer it.
-- `status` other than `completed`: failed. Exit 1 also covers a cancelled or interrupted turn and an unreachable server.
+- Exit 2, or `pendingRequestCount > 0` in `<t3> thread show <id> --json`: waiting for the user. Report it; never answer it.
+- `status` other than `completed`: failed; `error` says why. Exit 1 also covers a cancelled or interrupted turn and an unreachable server.
 - `status` `completed`: read the result.
 
 ## Read
