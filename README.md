@@ -14,7 +14,7 @@ npx skills@latest add ronalson/vaibes
 
 ## Agent setup
 
-`install.py` puts the global agent rules, the read-only role rules, the Claude agent files, and the `agent-role` launcher into your home directory. It needs Python 3.9 or later and nothing outside the standard library. It reads nothing from the network or the environment except the home directory.
+`install.py` puts the global agent rules, the read-only role rules, the Claude agent files, and the `agent-role` launcher into your home directory. With `t3`, it also adds the `Claude worker` provider instance that the [T3 Code runtime](skills/delegate/references/runtimes/t3code.md) uses to T3 Code's settings. It needs Python 3.9 or later and nothing outside the standard library. It reads nothing from the network or the environment except the home directory.
 
 | Folder | Holds |
 | --- | --- |
@@ -32,6 +32,7 @@ npx skills@latest add ronalson/vaibes
 | `rules/global.md` + `rules/delegation.md` | managed block in `~/.codex/AGENTS.md` | `codex` |
 | `rules/global.md` + `rules/delegation.md` | managed block in `~/.grok/AGENTS.md` | `grok` |
 | `rules/global.md` only | managed block in `~/.pi/agent/AGENTS.md` | `pi` |
+| `T3_WORKER` in `install.py` | `providerInstances.claudeAgent_claude_worker` in `~/.t3/userdata/settings.json` | `t3` (needs `claude`) |
 
 ### Usage
 
@@ -55,6 +56,8 @@ python3 install.py claude grok
 
 Add `codex` to write the rules into `~/.codex/AGENTS.md` on a machine that uses Codex.
 
+Add `t3` on a machine that runs T3 Code, for example `python3 install.py claude grok pi t3`. It changes only the `Claude worker` provider instance and keeps every other T3 Code setting. A running T3 Code server picks up the change without a restart. The installer assumes T3 Code's default data folder, `~/.t3`. Settings that differ per machine, such as the worktree location, branch prefix, and worktree cleanup, stay in the T3 Code app.
+
 Run it again after pulling to apply new rules. `~/.local/bin` must be on your `PATH` for `agent-role`.
 
 `--check` writes nothing. It prints one status line per target and exits 0 only when every target is `ok`:
@@ -67,6 +70,7 @@ Run it again after pulling to apply new rules. `~/.local/bin` must be on your `P
 | `changed locally` | The target was edited after the last install, or exists but was not installed by vaibes. |
 | `symlink` | The target, or a folder above it inside the home directory, is a symlink. |
 | `bad markers` | The startup file has a broken rules block. |
+| `not set up` | `~/.t3/userdata/` does not exist: T3 Code is not installed or has never run. |
 
 ```bash
 python3 install.py --check claude grok pi
