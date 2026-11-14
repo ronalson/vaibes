@@ -4,8 +4,10 @@
 Usage: python3 install.py [--check] AGENT...
 
 Copies the role rules, the Claude agent files, and agent-role, and writes the
-global rules into a managed block in each agent's startup file. Every target is
-checked before anything is written; if one is refused, nothing is written.
+global rules into a managed block in each agent's startup file. With `t3`, it
+also adds the "Claude worker" provider instance to T3 Code's settings. Every
+target is checked before anything is written; if one is refused, nothing is
+written.
 Uses only the standard library and reads nothing from the environment except
 the home directory.
 """
@@ -41,7 +43,19 @@ RULES_TARGETS = {
     "pi": (".pi/agent/AGENTS.md", False),
 }
 
-REFUSED = ("symlink", "changed locally", "bad markers")
+# T3 Code reads provider instances from its settings file and watches the file,
+# so a running server picks up the change. The delegate T3 Code runtime page
+# starts workers with this instance ID.
+T3_SETTINGS = ".t3/userdata/settings.json"
+T3_WORKER_KEY = ("providerInstances", "claudeAgent_claude_worker")
+T3_WORKER = {
+    "driver": "claudeAgent",
+    "displayName": "Claude worker",
+    "enabled": True,
+    "config": {"launchArgs": "--agent worker --strict-mcp-config"},
+}
+
+REFUSED = ("symlink", "changed locally", "bad markers", "not set up")
 
 
 class BadMarkers(Exception):
@@ -51,9 +65,18 @@ class BadMarkers(Exception):
 @dataclass
 class Target:
     rel: str  # path relative to the home directory
-    content: str  # the whole file, or the block contents for a managed block
+    content: str  # the whole file, the block contents, or the JSON value
     block: bool = False
     mode: Optional[int] = None
+    json_key: Optional[Tuple[str, ...]] = None  # set for one key in a JSON file
+
+    @property
+    def state_key(self) -> str:
+        return self.rel + "#" + ".".join(self.json_key) if self.json_key else self.rel
+
+    @property
+    def label(self) -> str:
+        return f"~/{self.rel} " + ".".join(self.json_key) if self.json_key else f"~/{self.rel}"
 
 
 @dataclass
@@ -86,7 +109,13 @@ def build_targets(agents: List[str]) -> List[Target]:
             rel, with_delegation = RULES_TARGETS[agent]
             rules = shared + "\n" + delegation if with_delegation else shared
             targets.append(Target(rel, rules, block=True))
+    if "t3" in agents:
+        targets.append(Target(T3_SETTINGS, canonical_json(T3_WORKER), json_key=T3_WORKER_KEY))
     return targets
+
+
+def canonical_json(value: object) -> str:
+    return json.dumps(value, indent=2, sort_keys=True) + "\n"
 
 
 def ensure_newline(text: str) -> str:
@@ -155,6 +184,9 @@ def classify(home: Path, target: Target, recorded: Optional[str]) -> Plan:
         return Plan(target, "symlink", "is a symlink or inside a symlinked folder; unstow the dotfiles `agents` package first")
     not_ours = "exists but was not installed by vaibes" if recorded is None else "was changed since the last install"
 
+    if target.json_key:
+        return classify_json_key(path, target, recorded, not_ours)
+
     if not path.exists():
         new = render_block(target.content) if target.block else target.content
         return Plan(target, "missing", new=new)
@@ -184,6 +216,40 @@ def classify(home: Path, target: Target, recorded: Optional[str]) -> Plan:
     if sha256(current) == recorded:
         return Plan(target, "outdated", new=target.content)
     return Plan(target, "changed locally", not_ours)
+
+
+def classify_json_key(path: Path, target: Target, recorded: Optional[str], not_ours: str) -> Plan:
+    """Plan one key in a JSON file that belongs to another app. Other keys are kept."""
+    assert target.json_key
+    key = ".".join(target.json_key)
+    if not path.parent.is_dir():
+        return Plan(target, "not set up", "has no folder; install T3 Code and start it once")
+    try:
+        # T3 Code saves only changed settings, so a fresh install may have no file yet.
+        data = json.loads(decode(path.read_bytes())) if path.exists() else {}
+    except ValueError:
+        return Plan(target, "changed locally", "is not valid JSON")
+    node = data
+    for part in target.json_key[:-1]:
+        if not isinstance(node, dict):
+            break
+        node = node.setdefault(part, {})
+    if not isinstance(node, dict):
+        return Plan(target, "changed locally", f"has no JSON object to hold {key}")
+
+    leaf = target.json_key[-1]
+    wanted = json.loads(target.content)
+    if leaf not in node:
+        status = "missing"
+    elif node[leaf] == wanted:
+        return Plan(target, "ok")
+    elif sha256(canonical_json(node[leaf])) == recorded:
+        status = "outdated"
+    else:
+        return Plan(target, "changed locally", f"{key} " + not_ours)
+    node[leaf] = wanted
+    new = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+    return Plan(target, status, new=new)
 
 
 def write_atomic(path: Path, data: bytes, mode: Optional[int]) -> None:
@@ -221,8 +287,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         description="Install the vaibes agent rules, role files, Claude agent files, and agent-role.",
     )
     parser.add_argument("--check", action="store_true", help="report each target's status and write nothing")
-    parser.add_argument("agents", nargs="+", metavar="AGENT", choices=AGENTS, help="one or more of: " + ", ".join(AGENTS))
+    choices = AGENTS + ("t3",)
+    parser.add_argument("agents", nargs="+", metavar="AGENT", choices=choices, help="one or more of: " + ", ".join(choices))
     args = parser.parse_args(argv)
+    if "t3" in args.agents and "claude" not in args.agents:
+        parser.error("t3 needs claude: the T3 Code provider instance runs the Claude worker agent file")
 
     home = Path.home()
     try:
@@ -232,17 +301,17 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 1
 
     # Check every target before writing anything.
-    plans = [classify(home, t, state.get(t.rel)) for t in build_targets(args.agents)]
+    plans = [classify(home, t, state.get(t.state_key)) for t in build_targets(args.agents)]
 
     if args.check:
         for plan in plans:
-            print(f"{plan.status:<16} ~/{plan.target.rel}")
+            print(f"{plan.status:<16} {plan.target.label}")
         return 0 if all(plan.status == "ok" for plan in plans) else 1
 
     refused = [plan for plan in plans if plan.status in REFUSED]
     if refused:
         for plan in refused:
-            print(f"refused: ~/{plan.target.rel} {plan.reason}", file=sys.stderr)
+            print(f"refused: {plan.target.label} {plan.reason}", file=sys.stderr)
         print("install.py: nothing written", file=sys.stderr)
         return 1
 
@@ -251,10 +320,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         target = plan.target
         if plan.new is not None:
             write_atomic(home / target.rel, encode(plan.new), target.mode)
-            print(f"wrote     ~/{target.rel}")
+            print(f"wrote     {target.label}")
         else:
-            print(f"unchanged ~/{target.rel}")
-        new_state[target.rel] = sha256(target.content)
+            print(f"unchanged {target.label}")
+        new_state[target.state_key] = sha256(target.content)
 
     if new_state != state:
         data = json.dumps({"hashes": new_state}, indent=2, sort_keys=True) + "\n"

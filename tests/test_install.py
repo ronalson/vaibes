@@ -5,6 +5,7 @@ runs that copy with HOME set to a temporary home, so the real home directory is
 never read or written.
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -16,6 +17,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 SOURCES = ("install.py", "rules", "roles", "claude-agents", "bin")
 STATE = ".config/vaibes/install-state.json"
+T3_SETTINGS = ".t3/userdata/settings.json"
 BEGIN_PREFIX = "<!-- BEGIN vaibes rules"
 END_LINE = "<!-- END vaibes rules -->"
 
@@ -185,6 +187,59 @@ class InstallTest(unittest.TestCase):
         self.assertExit(result, 1)
         self.assertIn("changed locally  ~/.claude/agents/worker.md", result.stdout)
         self.assertEqual(self.snapshot(), before)
+
+    def write_t3_settings(self, settings):
+        path = self.home / T3_SETTINGS
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(settings, indent=2) + "\n")
+        return path
+
+    def test_t3_adds_worker_instance_and_keeps_other_settings(self):
+        path = self.write_t3_settings({"favorites": [], "providerInstances": {"grok": {"driver": "grok", "enabled": True}}})
+
+        self.assertExit(self.install("claude", "t3"), 0)
+
+        settings = json.loads(path.read_text())
+        self.assertEqual(settings["favorites"], [])
+        self.assertEqual(settings["providerInstances"]["grok"], {"driver": "grok", "enabled": True})
+        worker = settings["providerInstances"]["claudeAgent_claude_worker"]
+        self.assertEqual(worker["config"]["launchArgs"], "--agent worker --strict-mcp-config")
+        self.assertTrue(worker["enabled"])
+        self.assertExit(self.install("--check", "claude", "t3"), 0)
+
+    def test_t3_creates_settings_file_in_existing_t3_folder(self):
+        (self.home / T3_SETTINGS).parent.mkdir(parents=True)
+
+        self.assertExit(self.install("claude", "t3"), 0)
+
+        settings = json.loads((self.home / T3_SETTINGS).read_text())
+        self.assertEqual(list(settings["providerInstances"]), ["claudeAgent_claude_worker"])
+
+    def test_t3_refuses_instance_set_up_differently(self):
+        # An instance made by hand in the app with other launch args is the
+        # user's; the installer must not overwrite it.
+        worker = {"driver": "claudeAgent", "enabled": True, "config": {"launchArgs": "--agent worker"}}
+        path = self.write_t3_settings({"providerInstances": {"claudeAgent_claude_worker": worker}})
+        before = path.read_bytes()
+
+        result = self.install("claude", "t3")
+
+        self.assertExit(result, 1)
+        self.assertIn("claudeAgent_claude_worker exists but was not installed by vaibes", result.stderr)
+        self.assertEqual(path.read_bytes(), before)
+        self.assertFalse((self.home / ".claude/CLAUDE.md").exists())
+
+    def test_t3_refuses_without_t3_and_writes_nothing(self):
+        result = self.install("claude", "t3")
+
+        self.assertExit(result, 1)
+        self.assertIn("install T3 Code", result.stderr)
+        self.assertFalse((self.home / ".t3").exists())
+        self.assertFalse((self.home / ".claude").exists())
+
+    def test_t3_without_claude_is_usage_error(self):
+        self.assertExit(self.install("t3"), 2)
+        self.assertFalse((self.home / ".local").exists())
 
     def test_unknown_agent_is_usage_error(self):
         self.assertExit(self.install("foo"), 2)

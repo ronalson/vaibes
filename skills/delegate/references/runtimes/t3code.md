@@ -8,7 +8,7 @@ Checked against T3 Code 0.1.9, whose `t3` CLI has only `thread list`, `start`, `
 
 ## Setup (once per machine, by the user)
 
-In the T3 Code app, add a Claude provider instance labeled `Claude worker`, with ID `claudeAgent_claude_worker` and launch args `--agent worker --strict-mcp-config`. It runs the `worker` agent file. What it cannot do:
+Run `python3 install.py claude t3` from the vaibes repository. Besides the `worker` agent file, it adds a Claude provider instance labeled `Claude worker`, with ID `claudeAgent_claude_worker` and launch args `--agent worker --strict-mcp-config`, to T3 Code's settings. It runs the `worker` agent file. What it cannot do:
 
 - No per-thread `--add-dir`: T3 Code turns `--add-dir` into an instance-wide setting, so the worker reads and writes only inside its worktree.
 - No per-thread effort: effort comes from T3 Code's model selection.
@@ -23,7 +23,7 @@ If `thread start` reports an unknown provider, the instance is missing: report i
 <t3> thread list --project <repo> --json
 ```
 
-It succeeds only when the T3 Code server is running and knows the project. When the server is running but the project is not registered, report it and ask whether to run `<t3> project add <repo>` or use the headless runtime. Detection never starts the server.
+It succeeds only when the T3 Code server is running and knows the project. When the server is running but the project is not registered, it exits 1 with `No T3 Code project matches '<path>'`: report it and ask whether to run `<t3> project add <repo>` or use the headless runtime. Detection never starts the server.
 
 ## Prepare
 
@@ -45,9 +45,9 @@ The worker cannot read the run folder or the spec, which are outside its worktre
   < <run folder>/phase-<N>-<short-name>-packet.md > <run folder>/worker-<phase>.t3.json
 ```
 
-- `--model` is required with `--provider`. Use the model the `worker` agent file names, unless the phase calls for another.
+- `--model` is required with `--provider` and takes a model ID as T3 Code lists it. Use the model the `worker` agent file names, unless the phase calls for another.
 - Pass the full `<topic>/<phase>` branch; T3 Code uses `--branch` as given.
-- While the thread runs, find its ID with `<t3> thread list --project <repo> --json` by its title; the reply also carries it as `threadId` once the command exits. Record the worker in `agents.txt` with runtime `t3code`, the thread ID as the handle, and the `.t3.json` file as the log. Treat the ID as opaque: threads started from inside a T3 Code session get an `mcp:` prefix, and the full ID is what `show` and `send` take.
+- Take the thread ID from the reply's `threadId`. Before the command exits, find it with `<t3> thread list --project <repo> --json`, which lists threads newest first: take the first with the title. Record the worker in `agents.txt` with runtime `t3code`, the thread ID as the handle, and the `.t3.json` file as the log. Treat the ID as opaque: threads started from inside a T3 Code session get an `mcp:` prefix, and the full ID is what `show` and `send` take.
 
 A wave starts every worker this way before waiting on any.
 
@@ -75,7 +75,7 @@ Wait for the background `thread start` (or `send`) to exit, then branch on its J
 
 ## Close
 
-The CLI cannot archive threads. T3 Code can recreate a removed worktree when its thread is reopened, so the Finish report lists the run's thread IDs for the user to archive in the T3 Code app.
+T3 Code can recreate a removed worktree when its thread is reopened, so archive each worker thread once its worktree is removed. The CLI cannot archive. When the T3 Code MCP tools are available, as in a session started from the T3 Code app, use `t3_thread_organize` with `action: archive` and the thread ID. Otherwise the Finish report lists the thread IDs for the user to archive in the app.
 
 ## Inspect
 
