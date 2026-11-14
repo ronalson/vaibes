@@ -13,7 +13,9 @@ Writes: in the dry-vaibes checkout, the `<topic>/run` branch and its commits, a 
 ## How to get to it (user POV)
 
 - Run `/delegate <spec path>` in a session in the target repo. The session picks the runtime as `skills/delegate/references/runtimes/contract.md` says, or uses the one the user names:
-  - herdr: from a herdr pane, with the herdr server running.
+  - herdr: from a herdr pane, with the herdr server running. The only runtime with a journey here.
+  - T3 Code: outside herdr, with the T3 Code server running and the repo registered, or when the user names it. No journey yet.
+  - headless: anywhere else, or when the user names it. No journey yet.
 
 ## Driving it with vaibes-verify.sh
 

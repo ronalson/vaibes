@@ -25,7 +25,7 @@ Stop and point to the right skill when:
 
 Stop and report if any required check fails.
 
-1. Choose the runtime as in [Choosing a runtime](references/runtimes/contract.md#choosing-a-runtime), and read its page. When none is available, report it and stop.
+1. Choose the runtime as in [Choosing a runtime](references/runtimes/contract.md#choosing-a-runtime), and read its page, including any setup it requires. If that setup is missing, report it and stop.
 2. The `worker` and `scout` agent files exist. `agent-role` plus `grok` or `pi` are needed only for a Grok or Pi scout, and Pi is not installed on every machine; report the ones missing and stop only if the run needs them. Commands are in [references/roles.md](references/roles.md#preflight).
 3. Create the run folder `<repo>/context/runs/<date>-<topic>/` with an empty `worktrees.txt` and `agents.txt`.
 4. Run the runtime's Prepare operation, when its page has one.
@@ -68,5 +68,5 @@ Otherwise read each wave's results and dispatch the next wave without checking i
 ## Finish
 
 1. Close the agents in `agents.txt` with the Close operation, then run the cleanup sweep in [worktrees.md](references/worktrees.md#cleanup-sweep). It removes every listed worktree and the phase branches; `<topic>/run` stays as the result.
-2. Tell the user what changed per phase, the files, the checks and their results, the evidence paths in the run folder, and what is unresolved. Results in the run folder are not shown to the user.
+2. Tell the user what changed per phase, the files, the checks and their results, the evidence paths in the run folder, anything the runtime page says to report, such as T3 Code thread IDs to archive, and what is unresolved. Results in the run folder are not shown to the user.
 3. Point to the spec path and to `review` for `<base>..<topic>/run`.

@@ -7,8 +7,10 @@ A runtime is how the run's agents are started, reached again, and read. `delegat
 Use the runtime the user names in the request. Otherwise use the first that applies:
 
 1. [herdr](herdr.md), when `HERDR_ENV=1` and `herdr status server` succeeds. `HERDR_ENV` alone is not enough: a process started from a herdr pane inherits it.
+2. [t3code](t3code.md), when its Detect succeeds: the T3 Code server is running and knows the repo.
+3. [headless](headless.md) otherwise.
 
-Detection never starts a server. When no runtime applies, report that no runtime is available and stop.
+Detection never starts a server. A runtime page that cannot run a role names the runtime that runs it instead; for example, T3 Code runs the reviewer headless.
 
 ## Operations
 

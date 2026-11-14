@@ -49,6 +49,14 @@ Write `<run folder>/phase-<N>-<short-name>-result.md`. For every Gate item that 
 
 When a gate fails, write `phase-<N>-<short-name>-packet-2.md` with the same fields. Add to Use the failing items, quoted from the result file or from your own run, and what you expect instead. Give it to the same worker with the runtime's Send operation, prompting with the new path. A second failure is a stop.
 
+## Runtimes without the run folder
+
+Some runtimes cannot give the worker access to the run folder or the spec, which live outside its worktree; the runtime page says so. Then:
+
+- The prompt is the packet's full text, not its path. Still save it in the run folder.
+- In Use, quote the spec's Goal, Approach, and Validation instead of pointing to the file, and name the worktree as the folder the worker starts in.
+- In Return, use the result path the runtime page gives, inside the worktree. Copy the file into the run folder before reading it.
+
 ## Read-only packets
 
 Scouts need only Goal, Use, Return, and Stop if. Ask one sweeper question: classify, route, extract, search files, read logs, summarize, pattern-match, or walk files to flag a smell. Give the paths you already know, and name the return format, such as a cited list of `file:line` locations. The scout never writes code. A side task that needs judgment goes to a worker.

@@ -20,7 +20,7 @@ Stop and ask when the range is empty, the spec has no `## Validation` section, o
 
 ## Preflight
 
-1. Choose the runtime as in [Choosing a runtime](../delegate/references/runtimes/contract.md#choosing-a-runtime), and read its page. When none is available, report it and stop.
+1. Choose the runtime as in [Choosing a runtime](../delegate/references/runtimes/contract.md#choosing-a-runtime), and read its page. When it cannot run the reviewer, read the page of the runtime it names instead.
 2. Run the checks in [roles.md](../delegate/references/roles.md#preflight) for the reviewer: `agent-role` and the tool it runs the reviewer with. Report what is missing and stop.
 3. Run the runtime's Prepare operation, when its page has one.
 
