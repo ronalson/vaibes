@@ -6,13 +6,13 @@ This directory is the maintained source for verifying the vaibes workflow skills
 
 - A fresh run exists: `H=.claude/skills/verify-vaibes/scripts/vaibes-verify.sh; $H start` printed a `RUN_DIR`.
 - `$H doctor "$RUN_DIR"` prints `doctor: healthy`.
-- The clone is at dry-vaibes `main` with the fixture specs in `context/specs/`, no `<topic>/*` branches, and no worktrees besides its own checkout. That is the state every journey starts from unless its preconditions say otherwise.
-- Never run a journey in your own dry-vaibes checkout or in a clone another run created.
+- The run checkout is a detached worktree at dry-vaibes `main` with the fixture specs in `context/specs/`, there are no `clear/*` branches, and the run dir holds no other worktree. That is the state every journey starts from unless its preconditions say otherwise.
+- Never run a journey in your own dry-vaibes checkout or in a run checkout another run created.
 
 ## Driving conventions
 
 - Drive each skill through `$H agent "$RUN_DIR" <step> <skill> <instructions>`, and record the result with `$H state "$RUN_DIR" <step>` right after.
-- Name the spec in the instructions by its path relative to the clone.
+- Name the spec in the instructions by its path relative to the run checkout.
 - Treat every expected file, heading, and status line as literal.
 - Give each step a short descriptive name. Evidence files are numbered in run order.
 
@@ -26,7 +26,7 @@ This directory is the maintained source for verifying the vaibes workflow skills
 
 ## Feature entry contract
 
-Each feature file starts with an H1 title, one paragraph describing the behavior, and a `Writes:` line naming what the skill changes in the clone. It then uses exactly four H2 sections in this order.
+Each feature file starts with an H1 title, one paragraph describing the behavior, and a `Writes:` line naming what the skill changes in the run checkout. It then uses exactly four H2 sections in this order.
 
 1. `Sub-features` lists short IDs with one line for each behavior.
 2. `How to get to it (user POV)` lists how a user starts the skill.

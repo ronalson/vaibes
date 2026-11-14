@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Run the vaibes workflow skills from this checkout against a throwaway clone of
-# dry-vaibes and record evidence for every step. See ../SKILL.md.
+# Run the vaibes workflow skills from this checkout against a throwaway worktree
+# of a local dry-vaibes checkout and record evidence for every step. See ../SKILL.md.
 #
 #   vaibes-verify.sh start   [--no-verify] [run-id]         -> prints RUN_DIR
 #   vaibes-verify.sh doctor  <run-dir>
@@ -9,16 +9,22 @@
 #   vaibes-verify.sh cleanup <run-dir>
 #
 # Layout of a run:
-#   <run-dir>/dry-vaibes/            throwaway clone, no remote; removed by cleanup
+#   <run-dir>/dry-vaibes/            detached worktree of the dry-vaibes checkout; removed by cleanup
 #   <run-dir>/dry-vaibes.worktrees/  where delegate puts worktrees; removed by cleanup
 #   <run-dir>/evidence/              proof; never removed by this script
 set -uo pipefail
 
 VAIBES="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 SKILL_DIR="$VAIBES/.claude/skills/verify-vaibes"
-ROOT="${VERIFY_VAIBES_ROOT:-${TMPDIR:-/tmp}/verify-vaibes}"
-SOURCE="${DRY_VAIBES_REPO:-git@github.com:ronalson/dry-vaibes.git}"
+ROOT="${VERIFY_VAIBES_ROOT:-$HOME/.cache/verify-vaibes}"
+# The main vaibes checkout, even when this runs from one of its worktrees.
+VAIBES_MAIN="$(dirname "$(git -C "$VAIBES" rev-parse --path-format=absolute --git-common-dir)")"
+# A local checkout the user has opened Claude in. Worktrees of a trusted repo
+# are trusted, so interactive workers do not stop on the folder-trust screen.
+SOURCE="${DRY_VAIBES_DIR:-$(dirname "$VAIBES_MAIN")/dry-vaibes}"
 REF="${DRY_VAIBES_REF:-main}"
+# Every journey uses this topic, so one run at a time per dry-vaibes checkout.
+TOPIC=clear
 
 die() { echo "vaibes-verify: $*" >&2; exit 2; }
 
@@ -40,17 +46,21 @@ cmd_start() {
     fixture="$SKILL_DIR/fixtures/clear-command-no-verify.md" no_verify=1
     shift
   fi
+  [[ -d "$SOURCE/.git" ]] || die "no dry-vaibes checkout at $SOURCE (set DRY_VAIBES_DIR)"
+  local leftover
+  leftover="$(git -C "$SOURCE" branch --list "$TOPIC/*")"
+  [[ -z "$leftover" ]] || die "$SOURCE already has $TOPIC/* branches; clean up the run that made them first:
+$leftover"
   local id="${1:-$(date +%Y%m%d-%H%M%S)-$$}"
   local dir="$ROOT/$id"
   [[ -e "$dir" ]] && die "run dir already exists: $dir"
   mkdir -p "$dir/evidence" || die "cannot create $dir"
   dir="$(cd "$dir" && pwd -P)"
   local app="$dir/dry-vaibes"
-  git clone --quiet --branch "$REF" "$SOURCE" "$app" || die "cannot clone $SOURCE at $REF"
-  # No remote, so nothing the run does can be pushed.
-  git -C "$app" remote remove origin
+  # Detached, so the run adds no branch until delegate creates $TOPIC/run.
+  git -C "$SOURCE" worktree add --quiet --detach "$app" "$REF" || die "cannot add a worktree of $SOURCE at $REF"
   if (( no_verify )); then
-    # A repo without a verify-<app> skill, committed so the tree starts clean.
+    # A repo without a verify-<app> skill, committed (detached) so the tree starts clean.
     git -C "$app" rm -rq .claude/skills/verify-tasks
     git -C "$app" -c user.name=verify-vaibes -c user.email=verify-vaibes@localhost \
       commit -qm "Remove verify-tasks for a no-verify run" || die "cannot commit the verify-tasks removal"
@@ -61,6 +71,7 @@ cmd_start() {
   sed '/^## Phases$/,$d' "$fixture" >"$app/context/specs/clear-command-unphased.md"
   cat >"$dir/run.env" <<EOF
 APP='$app'
+SRC='$SOURCE'
 FIXTURE='$fixture'
 BASE='$(git -C "$app" rev-parse HEAD)'
 EOF
@@ -68,7 +79,7 @@ EOF
     echo "# verify-vaibes run $id"
     echo
     echo "- vaibes under test: $VAIBES ($(git -C "$VAIBES" rev-parse --short HEAD)$(git -C "$VAIBES" diff --quiet HEAD 2>/dev/null || echo ', dirty'))"
-    echo "- dry-vaibes: $SOURCE at $REF ($(git -C "$app" rev-parse --short HEAD))"
+    echo "- dry-vaibes: worktree of $SOURCE at $REF ($(git -C "$app" rev-parse --short HEAD))"
     echo "- fixture: $fixture"
     echo "- claude: $(claude --version 2>/dev/null || echo missing)"
     echo "- started: $(date -u +%FT%TZ)"
@@ -89,8 +100,19 @@ cmd_doctor() {
   for s in worker scout; do
     if [[ -f "$HOME/.claude/agents/$s.md" ]]; then echo "ok   agent file ~/.claude/agents/$s.md"; else echo "FAIL missing ~/.claude/agents/$s.md (run vaibes install.py)"; ok=0; fi
   done
-  if [[ -z "$(git -C "$APP" remote)" ]]; then echo "ok   clone has no remote"; else echo "FAIL clone has a remote: $(git -C "$APP" remote)"; ok=0; fi
-  if (cd "$APP" && npm test --silent >/dev/null 2>&1); then echo "ok   npm test passes in the clone"; else echo "FAIL npm test fails in the clone"; ok=0; fi
+  if [[ "$(git -C "$APP" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)" == "$SRC/.git" ]]; then
+    echo "ok   run checkout is a worktree of $SRC"
+  else echo "FAIL run checkout is not a worktree of $SRC"; ok=0; fi
+  if (cd "$APP" && npm test --silent >/dev/null 2>&1); then echo "ok   npm test passes in the run checkout"; else echo "FAIL npm test fails in the run checkout"; ok=0; fi
+  # Interactive workers (delegate under herdr) need $SRC trusted. Only the user
+  # grants trust, by opening Claude there once; this only reports it.
+  if python3 - "$SRC" 2>/dev/null <<'TRUST'
+import json, os, sys
+projects = json.load(open(os.path.expanduser("~/.claude.json"))).get("projects", {})
+sys.exit(0 if projects.get(sys.argv[1], {}).get("hasTrustDialogAccepted") else 1)
+TRUST
+  then echo "info claude trust: $SRC is trusted"
+  else echo "info claude trust: $SRC is not trusted; interactive workers will stop on the trust screen"; fi
   # Optional tools: each journey's preconditions say which it needs.
   if [[ "${HERDR_ENV:-}" == 1 ]] && herdr status server >/dev/null 2>&1; then echo "info herdr: inside herdr, server running"; else echo "info herdr: not available here"; fi
   for s in agent-role grok pi; do
@@ -103,8 +125,8 @@ cmd_doctor() {
   (( ok )) && echo "doctor: healthy" || { echo "doctor: NOT healthy"; exit 1; }
 }
 
-# Starts a fresh headless Claude session in the clone that follows one skill
-# from this checkout, and records its stream, final result, and denials.
+# Starts a fresh headless Claude session in the run checkout that follows one
+# skill from this checkout, and records its stream, final result, and denials.
 cmd_agent() {
   need_run "${1:-}"
   local step="${2:-}" skill="${3:-}"
@@ -145,16 +167,17 @@ PY
   echo "result: $base.result.md"
 }
 
-# Records what the run left behind: worktrees, branches, run folder, and any
-# herdr workspaces inside this run.
+# Records what the run left behind: its worktrees, its $TOPIC/* branches and
+# their commits, the run folder, and any herdr workspaces inside this run.
+# The dry-vaibes checkout's other worktrees and branches are left out.
 cmd_state() {
   need_run "${1:-}"
   local step="${2:-}"; [[ -n "$step" ]] || die "usage: state <run-dir> <step>"
   local n base; n="$(next_n)"; base="$RUN_DIR/evidence/$n-$step"
   {
-    echo "## git worktree list"; git -C "$APP" worktree list
-    echo; echo "## branches"; git -C "$APP" branch --list --format='%(refname:short) %(objectname:short)'
-    echo; echo "## log since base"; git -C "$APP" log --oneline --all "^$BASE"
+    echo "## git worktree list"; git -C "$SRC" worktree list | grep -F "$RUN_DIR/"
+    echo; echo "## branches"; git -C "$SRC" branch --list "$TOPIC/*" --format='%(refname:short) %(objectname:short)'
+    echo; echo "## log since base"; git -C "$SRC" log --oneline --branches="$TOPIC/*" "^$BASE"
     echo; echo "## status"; git -C "$APP" status --short
     echo; echo "## run folders"; find "$APP/context/runs" -type f 2>/dev/null | sed "s|$APP/||" | sort
     echo; echo "## herdr workspaces in this run"; herdr_workspaces
@@ -181,16 +204,25 @@ cmd_cleanup() {
   need_run "${1:-}"
   cmd_state "$RUN_DIR" cleanup-before >/dev/null
   local ws
-  ws="$(herdr_workspaces | grep -v '^(' || true)"
+  # Worktree workspaces first: herdr does not close the run checkout's own
+  # workspace while its worktrees' workspaces are open. Their paths sort after it.
+  ws="$(herdr_workspaces | grep -v '^(' | sort -r -k2 || true)"
   if [[ -n "$ws" ]]; then
     # Only workspaces whose checkout is inside this run dir, which no one else uses.
     while read -r id path; do
-      herdr workspace close "$id" >/dev/null 2>&1 && echo "closed herdr workspace $id ($path)"
+      if herdr workspace close "$id" >/dev/null 2>&1 </dev/null; then echo "closed herdr workspace $id ($path)"
+      else echo "could not close herdr workspace $id ($path); close it by hand"; fi
     done <<<"$ws"
   fi
   rm -rf "$APP" "$APP.worktrees"
-  log "" "## cleanup" "" "- removed the clone and its worktrees: $(date -u +%FT%TZ)"
-  echo "cleanup: removed $APP and $APP.worktrees; evidence kept in $RUN_DIR/evidence"
+  git -C "$SRC" worktree prune
+  # start refused to begin while $TOPIC/* branches existed, so these are the run's.
+  local b
+  for b in $(git -C "$SRC" for-each-ref --format='%(refname:short)' "refs/heads/$TOPIC/"); do
+    git -C "$SRC" branch -qD "$b" && echo "deleted branch $b"
+  done
+  log "" "## cleanup" "" "- removed the run checkout, its worktrees, and its $TOPIC/* branches: $(date -u +%FT%TZ)"
+  echo "cleanup: removed $APP, $APP.worktrees, and the $TOPIC/* branches in $SRC; evidence kept in $RUN_DIR/evidence"
 }
 
 case "${1:-}" in

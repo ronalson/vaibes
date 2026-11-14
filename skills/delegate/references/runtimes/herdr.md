@@ -14,7 +14,7 @@ Both must succeed. `HERDR_ENV` alone can be inherited by a process started from 
 
 ## Prepare
 
-Reuse the tab labeled `agents` in the current workspace if `tab list` shows one. Otherwise create it and keep its root pane ID from `.result.root_pane.pane_id`:
+Do this only when the run starts a scout or the reviewer, before the first one. Reuse the tab labeled `agents` in the current workspace if `tab list` shows one. Otherwise create it, note in the run folder that this run created it, and keep its root pane ID from `.result.root_pane.pane_id`:
 
 ```bash
 herdr tab list --workspace "$HERDR_WORKSPACE_ID"
@@ -42,7 +42,9 @@ Remove one, after the checks in [../worktrees.md](../worktrees.md#removing-a-wor
 herdr worktree remove --workspace <id>
 ```
 
-This removes the worktree, its folder, and its workspace, but keeps the branch. Never pass `--force` or `--trust-repository`. A `-` handle in `worktrees.txt` means the worktree was made with plain `git worktree` when herdr could not; remove it with `git -C <repo> worktree remove <path>`.
+This removes the worktree, its folder, and its workspace, but keeps the branch. Never pass `--force` or `--trust-repository`.
+
+`worktree create` returns `linked_worktree_source` when `<repo>` is itself a linked worktree. Then create the worktree with plain `git worktree` as in [../worktrees.md](../worktrees.md#creating-a-worktree), open a workspace on it with `herdr workspace create --cwd <worktree path> --label <topic>-<phase> --no-focus`, and record that workspace ID as the handle and its `.result.root_pane.pane_id` for the worker. To remove it, run `herdr workspace close <id>` first, then `git -C <repo> worktree remove <path>`. A `-` handle means no herdr workspace: remove it with `git -C <repo> worktree remove <path>` alone.
 
 ## Start
 
@@ -128,6 +130,8 @@ Read answers as in [../roles.md](../roles.md#reading-answers), with these herdr 
 ## Close
 
 Close a scout's or reviewer's pane with `herdr pane close <pane>` once its answer is in the run folder. Close only panes listed in `agents.txt`. Worker panes go with their workspace when [Workspace](#workspace) removes it.
+
+If this run created the `agents` tab, close it with `herdr tab close <tab_id>` once its listed panes are closed.
 
 ## Inspect
 

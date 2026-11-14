@@ -23,11 +23,11 @@ Preconditions:
 
 - **Before.** Run `$H state "$RUN_DIR" before-review` and keep its `## branches` section.
 - **Review.** Run `$H agent "$RUN_DIR" review review "Range: main..clear/run. Spec: context/specs/clear-command.md. Run folder: the one delegate created under context/runs/."` in the background, and wait for it to exit. Exit `0`, `.denials.json` is `[]`, and `.result.md` states the verdict.
-- **After.** Run `$H state "$RUN_DIR" after-review`. `## branches` matches `before-review` exactly, and `## git worktree list` shows only the clone itself.
+- **After.** Run `$H state "$RUN_DIR" after-review`. `## branches` matches `before-review` exactly, and `## git worktree list` shows only the run checkout.
 - **Proof.** In `NN-after-review.context/runs/<date>-clear/`, `review-report.md` and `reviewer-findings.md` exist. The report names the reviewer's tool and model, marks each finding confirmed or rejected with a reason, marks each Validation and Gate item covered or missing, and ends with `merge` or `fix`.
 
 ## Gotchas
 
 - The verdict can be `fix` on a correct run if the reviewer finds a real gap. The journey proves the review ran and reported, not that the code is perfect.
-- A Grok trust prompt in a fresh clone stops the reviewer. That is reported as a stop and fails the journey; the prompt goes in the report.
+- A Grok trust prompt in a new folder stops the reviewer. That is reported as a stop and fails the journey; the prompt goes in the report.
 - `state` copies only `context/`. The review worktree, if any, must already be gone; check `## git worktree list`.
