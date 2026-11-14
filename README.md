@@ -166,3 +166,7 @@ The skills below began as upstream work and are now locally maintained adaptatio
 | `create-verification-skill` | [cursor plugins](https://github.com/cursor/plugins/tree/main/pstack/skills/create-verification-skill) | `create-verification-skill` | `c49b37a` |
 | `deslop` | [cursor plugins](https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/deslop/SKILL.md) | `deslop` | `7314f72` |
 | `maintain-verification-skill` | [cursor plugins](https://github.com/cursor/plugins/blob/main/pstack/skills/maintain-verification-skill/SKILL.md) | `maintain-verification-skill` | `ccb5507` |
+
+## License
+
+Original work in this repository is [MIT](LICENSE). Adapted skills keep the upstream copyright notices in `vendor/`.

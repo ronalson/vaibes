@@ -2,3 +2,6 @@
 
 .agents/skills/
 __pycache__/
+
+# Working notes: session logs, packets, specs, and copied reference docs.
+context/
