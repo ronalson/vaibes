@@ -2,7 +2,7 @@
 
 Every role runs as a one-shot print-mode process in the background, with its output in a log file in the run folder. Worktrees are plain `git worktree`s. It needs only the agent CLIs, so it runs anywhere, including the roles another runtime cannot run. The operations are defined in [contract.md](contract.md).
 
-Untested end to end: no `delegate` or `review` run has used this page yet.
+Tested end to end with one `delegate` run of a single phase and one `review` run with the Grok reviewer. Runs with several waves, a resent packet after a failed gate, and the 10-minute idle limit are not yet tested.
 
 ## Detect
 
