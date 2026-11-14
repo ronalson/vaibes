@@ -32,7 +32,7 @@ Review the changes in `<base>..<head>` for defects: <one line on what the change
 
 ## Return
 
-Reply in the pane with your findings, following your rules.
+Reply with your findings, following your rules.
 
 ## Stop if
 

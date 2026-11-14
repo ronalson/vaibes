@@ -2,7 +2,7 @@
 # Run the vaibes workflow skills from this checkout against a throwaway clone of
 # dry-vaibes and record evidence for every step. See ../SKILL.md.
 #
-#   vaibes-verify.sh start   [run-id]                       -> prints RUN_DIR
+#   vaibes-verify.sh start   [--no-verify] [run-id]         -> prints RUN_DIR
 #   vaibes-verify.sh doctor  <run-dir>
 #   vaibes-verify.sh agent   <run-dir> <step> <skill> [instructions...]
 #   vaibes-verify.sh state   <run-dir> <step>
@@ -35,6 +35,11 @@ next_n() { printf '%02d' $(( $(find "$RUN_DIR/evidence" -maxdepth 1 -name '[0-9]
 log() { printf '%s\n' "$@" >>"$RUN_DIR/evidence/transcript.md"; }
 
 cmd_start() {
+  local fixture="$SKILL_DIR/fixtures/clear-command.md" no_verify=0
+  if [[ "${1:-}" == --no-verify ]]; then
+    fixture="$SKILL_DIR/fixtures/clear-command-no-verify.md" no_verify=1
+    shift
+  fi
   local id="${1:-$(date +%Y%m%d-%H%M%S)-$$}"
   local dir="$ROOT/$id"
   [[ -e "$dir" ]] && die "run dir already exists: $dir"
@@ -44,12 +49,19 @@ cmd_start() {
   git clone --quiet --branch "$REF" "$SOURCE" "$app" || die "cannot clone $SOURCE at $REF"
   # No remote, so nothing the run does can be pushed.
   git -C "$app" remote remove origin
+  if (( no_verify )); then
+    # A repo without a verify-<app> skill, committed so the tree starts clean.
+    git -C "$app" rm -rq .claude/skills/verify-tasks
+    git -C "$app" -c user.name=verify-vaibes -c user.email=verify-vaibes@localhost \
+      commit -qm "Remove verify-tasks for a no-verify run" || die "cannot commit the verify-tasks removal"
+  fi
   mkdir -p "$app/context/specs"
   # context/ is gitignored in dry-vaibes, as delegate expects.
-  cp "$SKILL_DIR/fixtures/clear-command.md" "$app/context/specs/clear-command.md"
-  sed '/^## Phases$/,$d' "$SKILL_DIR/fixtures/clear-command.md" >"$app/context/specs/clear-command-unphased.md"
+  cp "$fixture" "$app/context/specs/clear-command.md"
+  sed '/^## Phases$/,$d' "$fixture" >"$app/context/specs/clear-command-unphased.md"
   cat >"$dir/run.env" <<EOF
 APP='$app'
+FIXTURE='$fixture'
 BASE='$(git -C "$app" rev-parse HEAD)'
 EOF
   {
@@ -57,6 +69,7 @@ EOF
     echo
     echo "- vaibes under test: $VAIBES ($(git -C "$VAIBES" rev-parse --short HEAD)$(git -C "$VAIBES" diff --quiet HEAD 2>/dev/null || echo ', dirty'))"
     echo "- dry-vaibes: $SOURCE at $REF ($(git -C "$app" rev-parse --short HEAD))"
+    echo "- fixture: $fixture"
     echo "- claude: $(claude --version 2>/dev/null || echo missing)"
     echo "- started: $(date -u +%FT%TZ)"
   } >"$dir/evidence/transcript.md"

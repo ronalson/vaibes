@@ -8,10 +8,12 @@ Writes: in the clone, the `<topic>/run` branch and its commits, a run folder und
 
 - `delegate-herdr` finishes a one-phase run under herdr: a `done` result file, the phase merged into `<topic>/run`, and no phase worktrees or phase branches left.
 - `delegate-gate-evidence` leaves the phase's gate evidence in the run folder: `npm test` output with its exit code and the verify-tasks journey evidence the gate lists.
+- `delegate-no-verify` finishes a one-phase run in a repo without a `verify-<app>` skill, gated on `npm test` only, with no stop for the missing skill.
 
 ## How to get to it (user POV)
 
-- Run `/delegate <spec path>` in a session in the target repo, inside a herdr pane.
+- Run `/delegate <spec path>` in a session in the target repo. The session picks the runtime as `skills/delegate/references/runtimes/contract.md` says, or uses the one the user names:
+  - herdr: from a herdr pane, with the herdr server running.
 
 ## Driving it with vaibes-verify.sh
 
@@ -27,6 +29,12 @@ Preconditions:
 - **Result file.** In `NN-after-delegate.context/runs/<date>-clear/`, the phase result file's first status line is `**Status:** done`, and `worktrees.txt` marks every entry `# removed: `.
 - **Gate evidence.** The result file lists `npm test` with its output and exit code, and verify-tasks evidence paths for the gate's Feature map IDs.
 - **Proof.** Run `git -C "$RUN_DIR/dry-vaibes" switch clear/run` then `$H state "$RUN_DIR" on-run-branch`, and run `node src/cli.js help` in the clone. The help lists `clear`. Switch back with `git -C "$RUN_DIR/dry-vaibes" switch main`.
+
+`delegate-no-verify` runs the same steps under herdr, on a run made with `$H start --no-verify`, whose clone has no `.claude/skills/` and whose spec gates on `npm test` only:
+
+- **Delegate.** As above. `.result.md` reports phase 1 as done and does not stop for a missing `verify-<app>` skill.
+- **State, Result file, Proof.** As above.
+- **Gate evidence.** The result file lists `npm test` with its output and exit code, and no verify-tasks evidence.
 
 ## Gotchas
 

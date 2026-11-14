@@ -17,11 +17,13 @@ Requirements: Node 22 or later, `claude`, `git`, `python3`, and read access to t
 
 ```bash
 H=.claude/skills/verify-vaibes/scripts/vaibes-verify.sh   # from the vaibes repo root
-$H start                     # or: $H start my-run-id
+$H start                     # or: $H start my-run-id, $H start --no-verify [run-id]
 # -> RUN_DIR=/…/verify-vaibes/20261114-101500-4242
 ```
 
 `start` clones dry-vaibes (`DRY_VAIBES_REPO`, default `git@github.com:ronalson/dry-vaibes.git`; `DRY_VAIBES_REF`, default `main`) into `RUN_DIR/dry-vaibes`, removes its remote so nothing can be pushed, and installs two copies of the fixture spec from `fixtures/clear-command.md` in its `context/specs/`: `clear-command.md` with phases and `clear-command-unphased.md` without them. Set `DRY_VAIBES_REPO` to a local dry-vaibes checkout to skip the network; the clone takes its `main`, not your working tree.
+
+`start --no-verify` makes a clone without a `verify-<app>` skill, for the journeys that prove the skills work without one. It deletes `.claude/skills/verify-tasks/` and commits that in the clone, and installs both spec copies from `fixtures/clear-command-no-verify.md` under the same names. `run.env` records which fixture the run used.
 
 Set `VERIFY_VAIBES_ROOT` to choose where runs go. The default is `${TMPDIR:-/tmp}/verify-vaibes`. When you have a session scratchpad, use it. Shell variables don't persist between tool calls, so pass the printed `RUN_DIR` explicitly to every later command.
 
@@ -82,8 +84,9 @@ It records a final `cleanup-before` state, closes herdr workspaces whose checkou
 
 ## Helpers
 
-- `scripts/vaibes-verify.sh`: run with no args to print its usage. Subcommands are `start [run-id]`, `doctor <run-dir>`, `agent <run-dir> <step> <skill> [instructions...]`, `state <run-dir> <step>`, and `cleanup <run-dir>`. It needs bash, git, node, npm, python3, and claude, and herdr only for the herdr workspace listing.
+- `scripts/vaibes-verify.sh`: run with no args to print its usage. Subcommands are `start [--no-verify] [run-id]`, `doctor <run-dir>`, `agent <run-dir> <step> <skill> [instructions...]`, `state <run-dir> <step>`, and `cleanup <run-dir>`. It needs bash, git, node, npm, python3, and claude, and herdr only for the herdr workspace listing.
 - `fixtures/clear-command.md`: a complete one-phase spec for a `clear` command in dry-vaibes, with Validation and Phases. Journeys use it so that their outcome does not depend on an earlier journey.
+- `fixtures/clear-command-no-verify.md`: the same `clear` spec for a repo without a verify skill. Its Feature map says so, and its gate runs `npm test` only. `start --no-verify` installs it.
 
 ## Feature map
 
