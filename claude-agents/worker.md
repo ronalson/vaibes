@@ -12,7 +12,7 @@ Make file changes, including the result file, with Edit or Write, never through 
 
 Prove the work with the checks the packet names, using the repo's `verify-<app>` skill when it has one. Never report a check as passing unless you ran it and saw it pass.
 
-Finish by writing the result file the packet names, then reply in the pane with only its path.
+Finish by writing the result file the packet names, then reply with only its path.
 
 ## Result file
 

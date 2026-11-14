@@ -4,8 +4,9 @@ Read this before creating the first worktree of a run, and again before the clea
 
 ## Rules
 
-- Location: `<repo>.worktrees/<topic>-<phase-short-name>`, next to the repo. Create through `herdr worktree create`; use `git worktree` only when herdr cannot.
-- Record every worktree the run creates in `<run folder>/worktrees.txt`, one line each: herdr workspace ID, path, branch. Use `-` for the workspace ID of a `git worktree` fallback. Cleanup touches only listed entries.
+- Location: use the worktree folder the machine's own instructions give, after any check they require before writing there, such as a mount check. Otherwise use `<repo>.worktrees/`, next to the repo. This page calls it `<worktree folder>`; each worktree is `<worktree folder>/<topic>-<phase-short-name>`. A runtime that chooses its own path reports it; record that path, not the one you expected.
+- Create and remove worktrees through the runtime's Workspace operation ([runtimes/contract.md](runtimes/contract.md#operations)). Use the plain `git worktree` commands below when the runtime has none or cannot.
+- Record every worktree the run creates in `<run folder>/worktrees.txt`, one line each: the runtime's workspace handle, path, branch. Use `-` for the handle of a plain `git worktree`. Cleanup touches only listed entries.
 - Never pass `--force`, never remove a worktree with uncommitted changes, and never remove one that is not listed, without asking.
 
 ## Stale-worktree check
@@ -13,31 +14,31 @@ Read this before creating the first worktree of a run, and again before the clea
 At the start of each run, list worktrees older than 7 days and ask the user what to do with them:
 
 ```bash
-find <repo>.worktrees -mindepth 1 -maxdepth 1 -type d -mtime +7
+find <worktree folder> -mindepth 1 -maxdepth 1 -type d -mtime +7
 git -C <repo> worktree list
-herdr worktree list --cwd <repo>
 ```
+
+Add the runtime's own listing when its Workspace operation has one.
 
 ## Creating a worktree
 
+Use the runtime's Workspace operation. Without one, use plain git:
+
 ```bash
-herdr worktree create --cwd <repo> --branch <topic>/<phase> --base <ref> \
-  --path <repo>.worktrees/<topic>-<phase> --label <topic>-<phase> --no-focus
+git -C <repo> worktree add -b <topic>/<phase> <path> <ref>
 ```
 
-Keep `.result.workspace.workspace_id` for `worktrees.txt` and `.result.root_pane.pane_id` for starting the worker.
-
-The integration worktree is created the same way with `<phase>` set to `run` and `--base` set to the current HEAD. Phase worktrees use `--base <topic>/run`, so each wave starts from the merged result of the waves before it.
+The integration worktree is created the same way with `<phase>` set to `run` and the base set to the current HEAD. Phase worktrees use `<topic>/run` as the base, so each wave starts from the merged result of the waves before it.
 
 ## Merging
 
 Merge in the integration worktree, one phase branch at a time:
 
 ```bash
-git -C <repo>.worktrees/<topic>-run merge --no-ff <topic>/<phase>
+git -C <integration worktree> merge --no-ff <topic>/<phase>
 ```
 
-On a conflict, read both sides and the two phases' Lands and Acceptance lines. Resolve it when you understand what both sides intended, commit, and note the resolution for the user. When you are not sure, run `git -C <repo>.worktrees/<topic>-run merge --abort` and report the conflicting files and both phases.
+On a conflict, read both sides and the two phases' Lands and Acceptance lines. Resolve it when you understand what both sides intended, commit, and note the resolution for the user. When you are not sure, run `git -C <integration worktree> merge --abort` and report the conflicting files and both phases.
 
 After a wave merges, run the gate Commands that cover more than one phase in the integration worktree, so a clean merge that breaks behavior is caught before the next wave.
 
@@ -47,17 +48,16 @@ Remove a phase's worktree once its branch is merged and its result file is in th
 
 ```bash
 git -C <worktree> status --porcelain     # must be empty
-herdr worktree remove --workspace <id>
 ```
 
-This removes the worktree, its folder, and its workspace, but keeps the branch and the `<repo>.worktrees/` folder. Then prefix its line in `worktrees.txt` with `# removed: ` so the sweep skips it.
+Then remove it with the runtime's Workspace operation, or `git -C <repo> worktree remove <path>` for a `-` entry. Either keeps the branch and the worktree folder. Then prefix its line in `worktrees.txt` with `# removed: ` so the sweep skips it.
 
 ## Cleanup sweep
 
 At the end of the run, for each line in `worktrees.txt` that does not start with `# removed: `:
 
 1. Skip and report any worktree with uncommitted changes.
-2. Remove the worktree: `herdr worktree remove --workspace <id>`, or `git -C <repo> worktree remove <path>` for a `-` entry. Mark the line `# removed: `.
+2. Remove the worktree as in [Removing a worktree](#removing-a-worktree). Mark the line `# removed: `.
 
 Then delete the phase branches. They were merged into `<topic>/run`, not into the main checkout's branch, so `git branch -d` would refuse them all. Check the merge against `<topic>/run` instead, and use `-D` only on branches that check lists:
 
@@ -69,7 +69,7 @@ git -C <repo> branch -D <topic>/<phase>     # each listed branch except <topic>/
 Keep `<topic>/run`; it holds the result for review. Report any `<topic>/*` branch not in the merged list and ask before deleting it, since the work may be wanted. Then:
 
 ```bash
-rmdir <repo>.worktrees          # only when empty
+rmdir <worktree folder>         # only when the run created it and it is empty
 git -C <repo> worktree prune
 ```
 

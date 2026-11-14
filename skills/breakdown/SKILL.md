@@ -98,7 +98,7 @@ Number phases in dependency order. Keep phase names short, since `delegate` uses
 
 Every Validation item belongs to at least one gate. A fail-first check or manual check that no phase claims is never run.
 
-Hand the user the spec path when the breakdown is written. Execute with the `delegate` skill.
+Hand the user the spec path when the breakdown is written. When the target repository has no `verify-<app>` skill under `.claude/skills/`, add one line to the hand-off: the phases will be gated on their Commands only, and `/create-verification-skill` can add one. Execute with the `delegate` skill.
 
 ## Rejected framings
 

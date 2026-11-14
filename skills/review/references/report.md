@@ -6,7 +6,7 @@ Read this when writing the report. Save it as `<run folder>/review-report.md`. E
 # Review: <base>..<head>
 
 - Spec: `<repo>/context/specs/<spec>.md`
-- Reviewer: <grok-4.7 or glm-5.3>, findings in `<run folder>/reviewer-findings.md`
+- Reviewer: <tool and model the reviewer ran with>, findings in `<run folder>/reviewer-findings.md`
 - Scouts: <none, or each question and its answer file>
 
 ## Verdict
