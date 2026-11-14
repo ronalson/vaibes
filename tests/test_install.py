@@ -108,6 +108,10 @@ class InstallTest(unittest.TestCase):
         claude_md.parent.mkdir(parents=True)
         claude_md.write_text("@machine-guide.md\n")
         self.assertExit(self.install("claude"), 0)
+        # A hand-added block after ours, like the ronbox pointer.
+        after = "\n<!-- BEGIN pointer -->\n## Pointer\n<!-- END pointer -->\n"
+        with claude_md.open("a") as f:
+            f.write(after)
 
         global_md = self.src / "rules/global.md"
         global_md.write_text(global_md.read_text() + "- A new shared rule.\n")
@@ -115,10 +119,30 @@ class InstallTest(unittest.TestCase):
 
         text = claude_md.read_text()
         self.assertEqual(text.splitlines()[0], "@machine-guide.md")
+        self.assertTrue(text.endswith(END_LINE + "\n" + after))
         self.assertEqual(self.block(".claude/CLAUDE.md"), self.rules())
         self.assertIn("- A new shared rule.", text)
         self.assertEqual(text.count(BEGIN_PREFIX), 1)
         self.assertEqual(text.count(END_LINE), 1)
+
+    def test_refuses_text_on_marker_line(self):
+        # Text appended without a newline after the END marker shares its line;
+        # replacing the marker line would drop that text.
+        self.assertExit(self.install("claude"), 0)
+        claude_md = self.home / ".claude/CLAUDE.md"
+        with claude_md.open("a") as f:
+            f.seek(f.tell() - 1)
+            f.truncate()
+            f.write("<!-- BEGIN pointer -->\n## Pointer\n<!-- END pointer -->\n")
+        before = claude_md.read_bytes()
+        global_md = self.src / "rules/global.md"
+        global_md.write_text(global_md.read_text() + "- A new shared rule.\n")
+
+        result = self.install("claude")
+
+        self.assertExit(result, 1)
+        self.assertIn("markers", result.stderr)
+        self.assertEqual(claude_md.read_bytes(), before)
 
     def test_pi_gets_rules_without_delegation(self):
         self.assertExit(self.install("pi"), 0)
