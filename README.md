@@ -108,6 +108,17 @@ The installer never deletes files, including when you drop an agent from the lis
 2. In each startup file from the targets table, delete the lines from `<!-- BEGIN vaibes rules` through `<!-- END vaibes rules -->`, and the blank line the installer added before them. Delete the file if nothing else is left.
 3. If you removed everything, delete `~/.config/vaibes/install-state.json`. When you remove only some targets, keep it: entries for removed targets do no harm, and the remaining targets need theirs to accept updates.
 
+### Extending the setup
+
+Each kind of change touches a fixed set of files. Default models and tool flags live only in `bin/agent-role` and `claude-agents/*.md`; the rules and skills point to them instead of repeating them.
+
+- **New harness** (an agent tool that should get the rules): first confirm it reads global rules from a file, not only from app settings. Add its startup file to `RULES_TARGETS` in `install.py`, choose whether it gets `rules/delegation.md`, and add it to `AGENTS`, the targets table above, and a test in `tests/test_install.py`.
+- **New model or tool for a role**: add a `--via` case to `bin/agent-role` with that tool's read-only flags and default model. Keep `roles/<role>.md` tool-neutral.
+- **New role**: add `roles/<role>.md` and a case in `bin/agent-role`. If Claude should run it natively, add `claude-agents/<role>.md` and its target in `install.py`.
+- **Advisor**: an advisor such as `--advisor opus` or `--advisor fable` is chosen per worker session by the `delegate` skill. Do not set it in an agent file or as a saved default: subagents inherit it.
+
+Then run `python3 -m unittest discover -s tests -v`, check that `install.py` still has no network or subprocess use, and run the installer with `--check` on each machine.
+
 ## Skills
 
 | Skill | Use For | Not For |
